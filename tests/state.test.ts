@@ -750,6 +750,31 @@ describe("AppState favourites-only keeps the followed lines (QA 2026-11-15 M1, M
     expect(app.selected).toEqual(["040", "550"]);
   });
 
+  it("removing the last ★ removes its line too, and keeps the others", () => {
+    const app = fresh();
+    app.selected = ["040"];
+    app.applyFavOnly();
+    app.toggleFavorite("550");
+    app.applyFavOnly();
+    expect(app.selected).toEqual(["040", "550"]);
+    app.toggleFavorite("550");
+    app.applyFavOnly();
+    expect(app.selected).toEqual(["040"]);
+  });
+
+  it("removing the last ★ of the line of an open card keeps it as the card's line", () => {
+    const app = fresh();
+    app.applyFavOnly();
+    app.toggleFavorite("550");
+    app.applyFavOnly();
+    app.selectRoute("550", "x");
+    app.stack = [{ kind: "line", id: "oasa:550", title: "550" }] as never;
+    app.toggleFavorite("550");
+    app.applyFavOnly();
+    expect(app.selected).toEqual([]);
+    expect(app.tempLine).toBe("550");
+  });
+
   it("a shared link with lines wins over the stored favourites (M2)", () => {
     mem.set("fav.v2", JSON.stringify({ stops: [], lines: [{ id: "oasa:550", label: "550" }] }));
     const app = fresh();

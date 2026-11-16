@@ -647,6 +647,13 @@ export class AppState {
   // to «Αγαπημένα», or a start without picks, makes the picks the favourites only.
   applyFavOnly() {
     if (!this.favOnlyActive) {
+      // The last ★ removed: its line leaves the map like any other unstarred one.
+      const gone = (this.favShown ?? []).filter(id => !this.favorites.includes(id) && this.selected.includes(id));
+      for (const id of gone) this.dropPick(id);
+      if (gone.length) {
+        this.selected = this.selected.filter(id => !gone.includes(id));
+        this.writeUrl();
+      }
       this.favShown = null;
       this.favAsked = false;
       if (this.lines.length) this.linkedLines = false;   // the link's moment is over: a later ★ adds its line
