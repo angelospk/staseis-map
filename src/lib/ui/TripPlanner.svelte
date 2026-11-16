@@ -568,6 +568,9 @@
           </div>
         {/if}
       {/if}
+    {:else if !openField && FIELDS.some(f => ends[f].text.trim() && ends[f].text !== ME && !ends[f].place)}
+      <!-- a typed place counts only once it is picked from the list (QA 2026-11-15 F5) -->
+      <p class="note">Διάλεξε το μέρος από τη λίστα που ανοίγει όταν γράφεις: το κείμενο μόνο του δεν αρκεί.</p>
     {:else}
       <p class="note">Διάλεξε από πού και προς τα πού: οι γραμμές που τα συνδέουν φαίνονται στον χάρτη.</p>
     {/if}
