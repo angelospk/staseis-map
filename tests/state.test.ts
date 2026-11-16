@@ -715,3 +715,84 @@ describe("AppState back online", () => {
     vi.stubGlobal("fetch", () => new Promise(() => {}));
   });
 });
+
+describe("AppState favourites-only keeps the followed lines (QA 2026-11-15 M1, M2)", () => {
+  const mem = new Map<string, string>();
+  const fresh = () => {
+    vi.stubGlobal("localStorage", { getItem: (k: string) => mem.get(k) ?? null, setItem: (k: string, v: string) => void mem.set(k, v), removeItem: (k: string) => void mem.delete(k) });
+    vi.stubGlobal("fetch", () => new Promise(() => {}));
+    const app = new AppState();
+    app.lines = ["040", "Α1", "550", "224", "Β5", "3", "021"].map(id => ({ id, name: id, color: "#000", text_color: "#fff" })) as never;
+    return app;
+  };
+  beforeEach(() => mem.clear());
+
+  it("★ on a line adds it to the followed lines; it does not replace them (M1)", () => {
+    const app = fresh();
+    app.selected = ["040", "Α1"];
+    app.applyFavOnly();
+    app.toggleFavorite("550");
+    app.applyFavOnly();   // the App's effect runs this when the favourites change
+    expect(app.selected).toEqual(["040", "Α1", "550"]);
+  });
+
+  it("removing the ★ removes only that line", () => {
+    const app = fresh();
+    app.selected = ["040"];
+    app.applyFavOnly();
+    app.toggleFavorite("550");
+    app.applyFavOnly();
+    app.toggleFavorite("224");
+    app.applyFavOnly();
+    expect(app.selected).toEqual(["040", "550", "224"]);
+    app.toggleFavorite("224");
+    app.applyFavOnly();
+    expect(app.selected).toEqual(["040", "550"]);
+  });
+
+  it("a shared link with lines wins over the stored favourites (M2)", () => {
+    mem.set("fav.v2", JSON.stringify({ stops: [], lines: [{ id: "oasa:550", label: "550" }] }));
+    const app = fresh();
+    (app as unknown as { linkedLines: boolean }).linkedLines = true;   // init() sets it for a ?l= link
+    app.selected = ["040", "Α1"];
+    app.applyFavOnly();
+    expect(app.selected).toEqual(["040", "Α1"]);
+  });
+
+  it("after a link without favourites, the first ★ is added to the linked lines", () => {
+    const app = fresh();
+    (app as unknown as { linkedLines: boolean }).linkedLines = true;
+    app.selected = ["040", "Α1"];
+    app.applyFavOnly();
+    app.toggleFavorite("550");
+    app.applyFavOnly();
+    expect(app.selected).toEqual(["040", "Α1", "550"]);
+  });
+
+  it("without a link, the stored favourites are shown at start", () => {
+    mem.set("fav.v2", JSON.stringify({ stops: [], lines: [{ id: "oasa:550", label: "550" }] }));
+    const app = fresh();
+    app.applyFavOnly();
+    expect(app.selected).toEqual(["550"]);
+  });
+
+  it("turning «Αγαπημένα» on by hand still shows the favourite lines only", () => {
+    mem.set("fav.v2", JSON.stringify({ stops: [], lines: [{ id: "oasa:550", label: "550" }] }));
+    mem.set("favOnly", "false");
+    const app = fresh();
+    app.selected = ["040"];
+    app.applyFavOnly();
+    app.setFavOnly(true);
+    app.applyFavOnly();
+    expect(app.selected).toEqual(["550"]);
+  });
+
+  it("a ★ past the cap of 5 keeps the 5 followed lines", () => {
+    const app = fresh();
+    app.selected = ["040", "Α1", "550", "224", "Β5"];
+    app.applyFavOnly();
+    app.toggleFavorite("021");
+    app.applyFavOnly();
+    expect(app.selected).toEqual(["040", "Α1", "550", "224", "Β5"]);
+  });
+});

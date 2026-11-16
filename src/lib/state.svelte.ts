@@ -342,7 +342,9 @@ export class AppState {
     this.cityId = pageCityOf(location.pathname, location.search, stored<unknown>("city", null, () => true));
     store("city", this.cityId);
     this.selected = ids.slice(0, MAX_LINES);
-    if (ids.length > MAX_LINES) this.say(`Ο σύνδεσμος είχε ${ids.length} γραμμές. Κράτησα τις πρώτες ${MAX_LINES}.`);
+    this.linkedLines = ids.length > 0;
+    if (ids.length > MAX_LINES)
+      this.say(`Ο σύνδεσμος είχε ${ids.length} γραμμές. Έως ${MAX_LINES} ταυτόχρονα: έμεινε έξω ${ids.slice(MAX_LINES).join(", ")}.`);
     // Not document.title: a prerendered stop or line page (scripts/seo.ts) has the card in its title already.
     this.baseTitle = `Στάσεις · ${CITIES[this.cityId].name}`;
     this.nav = new CardNav(history, s => { this.stack = s; this.show(s[s.length - 1] ?? null); },
@@ -619,6 +621,7 @@ export class AppState {
   nearFocus = $derived(this.nearShown && this.nearGroups.length ? focusLines(this.nearGroups) : null);
 
   setFavOnly(on: boolean) {
+    if (on && !this.favOnly) this.favAsked = true;
     this.favOnly = on;
     store("favOnly", on);
   }
@@ -630,24 +633,62 @@ export class AppState {
   // Favourites only is in force: it is on and there is a favourite bus line to show.
   get favOnlyActive(): boolean { return this.favOnly && this.favorites.length > 0; }
 
+  // The page opened on a ?l= link: at start its lines win over the stored favourites (init sets it, the first
+  // applyFavOnly with the lines loaded clears it).
+  linkedLines = false;
+  // The favourite bus lines as last applied while favourites only was in force; null while it was not.
+  private favShown: string[] | null = null;
+  // The user turned favourites only on by hand (setFavOnly): the picks become the favourite lines only.
+  private favAsked = false;
+
   // Puts the map in line with favOnly: the city layer off and the favourite bus lines picked, or the layer back as
   // the user left it. The App calls it at start, once the lines are loaded, and when favOnly or the favourites change.
+  // A ★ adds its line and an unstar removes it; the other picks (from a link, a search) stay. Only a hand switch
+  // to «Αγαπημένα», or a start without picks, makes the picks the favourites only.
   applyFavOnly() {
     if (!this.favOnlyActive) {
+      this.favShown = null;
+      this.favAsked = false;
+      if (this.lines.length) this.linkedLines = false;   // the link's moment is over: a later ★ adds its line
       const want = stored("cityOn", true, isBool);
       if (want !== this.cityOn) this.applyCity(want);
       return;
     }
     if (this.cityOn) this.applyCity(false);
     if (!this.lines.length) return;   // the favourites are known once the lines are loaded
-    // The picks are the favourite bus lines only (the first MAX_LINES); a line shown from a card stays while it is open.
-    const known = this.favorites.filter(id => this.lineInfo.has(id)), want = known.slice(0, MAX_LINES);
-    for (const id of this.selected) {
-      if (want.includes(id)) continue;
-      // The line of an open card stays on the map as the card's own line until the card closes.
-      if (this.stack.length && this.selection?.line === id && !this.tempLine) this.tempLine = id;
-      else { if (this.selection?.line === id) this.selection = null; this.closeLine(id); }
+    const known = this.favorites.filter(id => this.lineInfo.has(id));
+    const prev = this.favShown, linked = this.linkedLines, asked = this.favAsked;
+    this.favShown = known;
+    this.linkedLines = false;
+    this.favAsked = false;
+    if (asked || (prev === null && !linked && !this.selected.length)) return this.pickFavsOnly(known);
+    // A link at start: its lines stay as they are, the favourites are not added on top.
+    const before = prev ?? (linked ? known : []);
+    const drop = before.filter(id => !known.includes(id) && this.selected.includes(id));
+    for (const id of drop) this.dropPick(id);
+    const kept = this.selected.filter(id => !drop.includes(id));
+    const add = known.filter(id => !before.includes(id) && !kept.includes(id));
+    const fit = add.slice(0, Math.max(0, MAX_LINES - kept.length));
+    if (this.tempLine && fit.includes(this.tempLine)) this.tempLine = null;   // now a pick
+    if (fit.length || drop.length) {
+      this.selected = [...kept, ...fit];
+      this.writeUrl();
     }
+    for (const id of fit) this.startLine(id);
+    if (fit.length) void Promise.allSettled(fit.map(fetchLineStatic)).then(() => this.fit(fit));
+    if (fit.length < add.length) this.say("Έως 5 γραμμές ταυτόχρονα. Αφαίρεσε μία για να προσθέσεις άλλη.");
+  }
+
+  // A pick leaves the map; the line of an open card stays on it as the card's own line until the card closes.
+  private dropPick(id: string) {
+    if (this.stack.length && this.selection?.line === id && !this.tempLine) this.tempLine = id;
+    else { if (this.selection?.line === id) this.selection = null; this.closeLine(id); }
+  }
+
+  // The picks become the favourite bus lines only (the first MAX_LINES); a line shown from a card stays while it is open.
+  private pickFavsOnly(known: string[]) {
+    const want = known.slice(0, MAX_LINES);
+    for (const id of this.selected) if (!want.includes(id)) this.dropPick(id);
     if (this.tempLine && want.includes(this.tempLine)) this.tempLine = null;   // now a pick
     else if (this.tempLine && !this.stack.length) this.clearSelection();
     const kept = this.selected.filter(id => want.includes(id)), add = want.filter(id => !kept.includes(id));
