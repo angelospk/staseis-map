@@ -207,7 +207,7 @@
   {#if app.finder}
     <div class="modal">
       <div class="top">
-        <input bind:this={input} bind:value={query} type="search" enterkeyhint="search" autocomplete="off" spellcheck="false"
+        <input bind:this={input} bind:value={query} name="q" type="search" enterkeyhint="search" autocomplete="off" spellcheck="false"
           placeholder="Γραμμή, στάση ή μέρος, π.χ. 040, Σύνταγμα" aria-label="Αναζήτηση γραμμής, στάσης ή μέρους" />
         <button type="button" class="x" aria-label="Κλείσιμο" onclick={() => close()}>×</button>
       </div>
