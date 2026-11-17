@@ -114,6 +114,67 @@ function checkTurnstileSetup() {
   return msg;
 }
 
+// Retention: the privacy policy keeps a report at most KEEP_MONTHS. A daily trigger (installPurgeTrigger)
+// deletes older rows and puts their Drive screenshot in the trash (Drive empties the trash after 30 days).
+// The Sheet's version history still holds deleted rows. Run purgeOld(true) from the editor first:
+// it only logs the count. The trigger passes an event object, so only a literal true means dry run.
+const KEEP_MONTHS = 12;
+
+function purgeOld(dryRun) {
+  const props = PropertiesService.getScriptProperties();
+  const book = SpreadsheetApp.openById(props.getProperty("SHEET_ID"));
+  const tab = book.getSheetByName("Feedback");
+  if (!tab || tab.getLastRow() < 2) return 0;
+  const cutoff = new Date();
+  cutoff.setMonth(cutoff.getMonth() - KEEP_MONTHS);
+  const lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+  try {
+    const rows = tab.getRange(2, 1, tab.getLastRow() - 1, 6).getValues(); // A..F: time ... image URL
+    let n = 0;
+    for (let i = rows.length - 1; i >= 0; i--) { // bottom up: row numbers above stay valid
+      const t = rows[i][0];
+      if (!(t instanceof Date) || t >= cutoff) continue; // a hand-edited or blank time: keep, check by hand
+      n++;
+      if (dryRun === true) continue;
+      trashImage(rows[i][5], props.getProperty("FOLDER_ID"));
+      tab.deleteRow(i + 2);
+    }
+    console.log((dryRun === true ? "would delete " : "deleted ") + n + " rows older than " + KEEP_MONTHS + " months");
+    return n;
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+// The editor's Run button passes no argument: run this one to see the count without deleting.
+function purgeOldDryRun() {
+  return purgeOld(true);
+}
+
+// Only a file that sits in the feedback folder is trashed, whatever the cell says.
+function trashImage(url, folderId) {
+  const m = /\/d\/([\w-]+)/.exec(String(url || ""));
+  if (!m) return;
+  try {
+    const file = DriveApp.getFileById(m[1]);
+    const parents = file.getParents();
+    while (parents.hasNext()) {
+      if (parents.next().getId() === folderId) { file.setTrashed(true); return; }
+    }
+  } catch (err) {
+    console.error("image already gone or not reachable");
+  }
+}
+
+// Run once from the editor: runs purgeOld every day at about 03:00 (script time zone), and replaces an older trigger.
+function installPurgeTrigger() {
+  ScriptApp.getProjectTriggers()
+    .filter(function (t) { return t.getHandlerFunction() === "purgeOld"; })
+    .forEach(function (t) { ScriptApp.deleteTrigger(t); });
+  ScriptApp.newTrigger("purgeOld").timeBased().everyDays(1).atHour(3).create();
+}
+
 function reply(o) {
   return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
 }

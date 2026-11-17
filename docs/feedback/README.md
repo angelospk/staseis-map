@@ -22,6 +22,14 @@ form field, without the image.
 
 A code change needs Deploy → Manage deployments → edit → New version; the URL stays the same.
 
+## Retention (12 months, as the privacy policy says)
+
+1. Paste the new `Code.gs`, then Deploy → Manage deployments → edit → New version (the URL stays the same).
+2. In the editor, run `purgeOldDryRun` and read the log: it only counts the rows older than 12 months.
+3. Run `installPurgeTrigger` once. Allow the Drive permission if it asks. A daily trigger (about 03:00) then
+   deletes old rows and moves their screenshots to the Drive trash (emptied after 30 days).
+4. Check Triggers (clock icon): one `purgeOld`, time-driven, day timer.
+
 ## Bot check (Cloudflare Turnstile, optional)
 
 The feedback form and «Λάθος θέση στάσης;» can send a Turnstile token. Each side works without the other:
