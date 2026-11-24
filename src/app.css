@@ -1,26 +1,41 @@
+/* Shared tokens with the app (docs/design-unify-2026-11.md; the app's lib/ui/theme.dart has the same values).
+   The old names (--bg, --fg, --panel, --border, --control...) stay: every component reads them. */
 :root {
-  --bg: #ffffff; --fg: #1d1d1f; --muted: #6e6e73; --panel: rgba(255, 255, 255, .96); --border: #d2d2d7;
+  --bg: #f7f7f4; --fg: #16181b; --muted: #5c626a; --panel: rgba(247, 247, 244, .97); --border: #e3e4df;
+  --surface: #ffffff; --accent-soft: #e7eefb; --on-accent: #ffffff;
+  --ok-text: #146c2e; --late-text: #b4470b; --bad-text: #c42b1c; --star: #e8a100;
+  /* The map's delay classes (dots, rings): athens-transit-rt/docs/QUALITY.md owns them, not the palette. */
   --ontime: #1a7f37; --late1: #a87c00; --late2: #d9480f; --late3: #c92a2a; --none: #6c757d; --warn-bg: #fff3cd;
-  --control: #f2f2f4; --control-hover: #e8e8ed; --accent: #0071e3;
-  --shadow: 0 4px 16px rgba(0, 0, 0, .18);
+  --control: #eff0ec; --control-hover: #e4e6e1; --accent: #1a56c4;
+  --shadow: 0 6px 24px rgba(16, 24, 40, .14), 0 1px 3px rgba(16, 24, 40, .08);
   /* Live quality level as text colour (normal, worse, much worse): 4.5:1 on --bg and --control. */
   --lvt-normal: #1a7f37; --lvt-worse: #8a6500; --lvt-much: #c92a2a;
+  /* Radius, type and spacing (same numbers as the app). */
+  --r-xs: 6px; --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --r-xl: 24px;
+  --fs-eta-xl: 28px; --fs-eta: 24px; --fs-eta-now: 17px; --fs-title-lg: 22px; --fs-title: 17px;
+  --fs-body: 15px; --fs-meta: 13px; --fs-note: 12.5px; --fs-eyebrow: 11.5px; --fs-badge: 14px;
   color-scheme: light dark;
 }
 /* Dark: the device's setting, unless the page is marked light; or the page is marked dark (lib/theme.ts).
    The values are repeated because MapView reads them with getComputedStyle, where light-dark() would stay unresolved. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #111113; --fg: #f5f5f7; --muted: #a1a1a6; --panel: rgba(28, 28, 30, .96); --border: #3a3a3c;
-    --warn-bg: #4a3b00; --control: #2c2c2e; --control-hover: #3a3a3c; --accent: #0a84ff;
+    --bg: #0f1113; --fg: #ecede9; --muted: #a3a9b1; --panel: rgba(15, 17, 19, .97); --border: #2e3337;
+    --surface: #181b1e; --accent-soft: #1c2c47; --on-accent: #0b1b3a;
+    --ok-text: #7dd99a; --late-text: #ffb25c; --bad-text: #ff8a7a; --star: #f5b83d;
+    --warn-bg: #4a3b00; --control: #24282c; --control-hover: #30353a; --accent: #8ab4f8;
+    --shadow: 0 6px 24px rgba(0, 0, 0, .45), 0 1px 3px rgba(0, 0, 0, .3);
     --lvt-normal: #3fb95f; --lvt-worse: #d4a72c; --lvt-much: #ff6b6b;
   }
 }
 :root[data-theme="light"] { color-scheme: light; }
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #111113; --fg: #f5f5f7; --muted: #a1a1a6; --panel: rgba(28, 28, 30, .96); --border: #3a3a3c;
-  --warn-bg: #4a3b00; --control: #2c2c2e; --control-hover: #3a3a3c; --accent: #0a84ff;
+  --bg: #0f1113; --fg: #ecede9; --muted: #a3a9b1; --panel: rgba(15, 17, 19, .97); --border: #2e3337;
+  --surface: #181b1e; --accent-soft: #1c2c47; --on-accent: #0b1b3a;
+  --ok-text: #7dd99a; --late-text: #ffb25c; --bad-text: #ff8a7a; --star: #f5b83d;
+  --warn-bg: #4a3b00; --control: #24282c; --control-hover: #30353a; --accent: #8ab4f8;
+  --shadow: 0 6px 24px rgba(0, 0, 0, .45), 0 1px 3px rgba(0, 0, 0, .3);
   --lvt-normal: #3fb95f; --lvt-worse: #d4a72c; --lvt-much: #ff6b6b;
 }
 * { box-sizing: border-box; }
@@ -135,3 +150,24 @@ button, input { font: inherit; color: inherit; }
 .locate[data-state="denied"] { color: #999 !important; }
 @keyframes locating { to { opacity: .35; } }
 /* MapLibre's buttons stay white in dark, so the locate icon keeps its dark colour. */
+
+/* Shared ETA style (docs/design-unify-2026-11.md §2): a live time has the live mark and ink; a timetable time is
+   muted with no mark; «τώρα» is a word, smaller and in the accent. */
+.eta { display: inline-flex; align-items: flex-start; gap: 3px; font-size: var(--fs-eta); font-weight: 800; line-height: 1.05;
+  letter-spacing: -0.02em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.eta .live { flex: none; display: inline-flex; line-height: 0; margin-top: .12em; color: var(--accent); }
+.eta.now .live { margin-top: .3em; }
+.eta.sched { color: var(--muted); font-weight: 700; }
+.eta.now { font-size: var(--fs-eta-now); color: var(--accent); letter-spacing: 0; line-height: 1.4; }
+.eta.xl { font-size: var(--fs-eta-xl); }
+.eta.xl.now { font-size: 19px; }
+/* Skeleton rows while arrivals load. */
+.skel { display: grid; grid-template-columns: 44px minmax(0, 1fr) 40px; align-items: center; gap: 10px; min-height: 52px;
+  border-top: 1px solid var(--border); }
+.skel i { display: block; height: 10px; border-radius: 5px; background: var(--control); animation: skel 1.4s ease-in-out infinite alternate; }
+.skel i:first-child { height: 30px; border-radius: var(--r-sm); }
+.skel span { display: flex; flex-direction: column; gap: 7px; }
+.skel span i:last-child { width: 45%; }
+.skel > i:last-child { height: 22px; }
+@keyframes skel { to { opacity: .45; } }
+@media (prefers-reduced-motion: reduce) { .skel i { animation: none; } }

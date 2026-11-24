@@ -62,11 +62,11 @@
 
 <style>
   .fixbar { position: absolute; z-index: 6; left: 12px; bottom: 28px; width: 360px; padding: 12px 16px; box-sizing: border-box;
-    background: var(--panel); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow); backdrop-filter: blur(8px); }
+    background: var(--panel); border: 1px solid var(--border); border-radius: var(--r-lg); box-shadow: var(--shadow); backdrop-filter: blur(8px); }
   p { margin: 0; }
   .title { font-size: 15px; font-weight: 600; }
   .hint { margin-top: 2px; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
-  .err { color: var(--late3); }
+  .err { color: var(--bad-text); }
   .row { display: flex; gap: 8px; margin-top: 10px; }
   .btn { flex: 1; min-height: 44px; border: 0; border-radius: 10px; background: var(--control); color: var(--fg); font: inherit;
     font-size: 14px; font-weight: 600; cursor: pointer; }

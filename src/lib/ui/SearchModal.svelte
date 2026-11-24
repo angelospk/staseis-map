@@ -208,7 +208,7 @@
     <div class="modal">
       <div class="top">
         <input bind:this={input} bind:value={query} type="search" enterkeyhint="search" autocomplete="off" spellcheck="false"
-          placeholder="Γραμμή, στάση ή μέρος, π.χ. 040, Σύνταγμα" aria-label="Αναζήτηση γραμμής, στάσης ή μέρους" />
+          placeholder="Στάση, γραμμή ή μέρος, π.χ. Σύνταγμα, 040" aria-label="Αναζήτηση γραμμής, στάσης ή μέρους" />
         <button type="button" class="x" aria-label="Κλείσιμο" onclick={() => close()}>×</button>
       </div>
       <div class="seg" role="group" aria-label="Τι ψάχνω">
@@ -336,7 +336,7 @@
   .go { flex: none; color: var(--accent); font-size: 13px; font-weight: 600; white-space: nowrap; }
   .modes { flex: none; display: inline-flex; gap: 2px; min-width: 40px; color: var(--muted); }
   .star { flex: none; width: 44px; height: 44px; border: 0; border-radius: 8px; background: none; color: var(--muted); font-size: 18px; cursor: pointer; }
-  .star.on { color: #f59f00; }
+  .star.on { color: var(--star); }
   .star:hover { background: var(--control); }
   .more, .link { min-height: 40px; padding: 0 6px; border: 0; background: none; color: var(--accent); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
   .link { min-height: 0; padding: 0; }

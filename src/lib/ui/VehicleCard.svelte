@@ -274,7 +274,7 @@
   .muted { margin: 4px 0; color: var(--muted); font-size: 12px; }
   .meta { margin: 0 0 4px; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
   .note { margin: 8px 0 2px; font-size: 11px; color: var(--muted); }
-  .note.warn { color: #e03131; }
+  .note.warn { color: var(--bad-text); }
   .ahead { list-style: none; margin: 0; padding: 0; }
   /* The bus's list: a window of --rows rows over every stop of the route (the rail list has no --rows). */
   .stops .ahead { position: relative; max-height: min(calc(var(--rows) * 36px), 36dvh); overflow-y: auto; overscroll-behavior: contain; }

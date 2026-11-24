@@ -190,7 +190,7 @@
   h3 { margin: 0; font-size: 14px; }
   h4 { margin: 0 0 4px; font-size: 12px; color: var(--muted); font-weight: 600; }
   .lede { margin: 0 0 8px; color: var(--muted); }
-  .warn { color: var(--late2); }
+  .warn { color: var(--late-text); }
   .muted { color: var(--muted); }
   .retry { min-height: 36px; padding: 0 14px; border: 1px solid var(--border); border-radius: 18px; background: var(--control); cursor: pointer; }
   section { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); }

@@ -115,7 +115,7 @@
   .next.muted { align-items: center; gap: 6px; color: var(--muted); }
   .dot { flex: none; align-self: center; width: 8px; height: 8px; border-radius: 50%; background: var(--ontime); }
   .dot.est { background: var(--muted); }
-  .late { color: var(--late2); font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .late { color: var(--late-text); font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
   .ic { flex: none; display: grid; place-items: center; width: 40px; height: 40px; border: 0; border-radius: 50%;
     background: var(--panel); color: var(--fg); cursor: pointer; text-decoration: none; }
   .ic:hover, .ic.on { color: var(--accent); }

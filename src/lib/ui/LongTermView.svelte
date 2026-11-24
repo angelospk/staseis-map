@@ -135,7 +135,7 @@
   h4 { margin: 10px 0 0; font-size: 12px; color: var(--muted); font-weight: 600; }
   .rank h4 { margin: 0 0 4px; }
   .lede { margin: 0 0 8px; color: var(--muted); }
-  .warn { color: var(--late2); }
+  .warn { color: var(--late-text); }
   .muted { color: var(--muted); }
   .small { margin: 0; font-size: 13px; }
   .retry { min-height: 36px; padding: 0 14px; border: 1px solid var(--border); border-radius: 18px; background: var(--control); cursor: pointer; }
