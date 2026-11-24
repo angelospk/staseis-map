@@ -107,6 +107,6 @@
   .note { margin: 0; color: var(--muted); font-size: 12px; }
   .tg { align-self: center; min-height: 36px; padding: 0 8px; border: 0; background: none; color: var(--accent); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
   a.main, a.tg { text-decoration: none; }
-  .warn { margin: 0; color: var(--late2); }
+  .warn { margin: 0; color: var(--late-text); }
   button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 </style>

@@ -109,7 +109,7 @@
   .kinds { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 12px; padding: 0; border: 0; }
   .kinds legend { margin-bottom: 6px; font-size: 13px; font-weight: 600; }
   .kinds label { padding: 7px 11px; border: 1px solid var(--border); border-radius: 999px; font-size: 13px; cursor: pointer; }
-  .kinds label.on { border-color: var(--accent); background: var(--accent); color: #fff; }
+  .kinds label.on { border-color: var(--accent); background: var(--accent); color: var(--on-accent); }
   .kinds input { position: absolute; opacity: 0; pointer-events: none; }
   .kinds label:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
   .more { display: grid; gap: 4px; font-size: 13px; }
@@ -118,7 +118,7 @@
   .note { margin: 8px 0; color: var(--muted); font-size: 12px; }
   .err { color: var(--danger, #c0392b); font-size: 13px; }
   .send { width: 100%; min-height: 44px; margin-top: 4px; border: 0; border-radius: 10px; background: var(--accent);
-    color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; }
+    color: var(--on-accent); font-size: 15px; font-weight: 600; cursor: pointer; }
   .send:disabled { opacity: .45; cursor: default; }
   .done { font-size: 15px; }
   @media (max-width: 719px) {

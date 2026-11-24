@@ -120,7 +120,7 @@
               onclick={() => app.toggleFavStop(s)}><Icon name="star-filled" size={20} /></button>
           </div>
           {#if !boards[s.id]}
-            <p class="muted">{failed["s:" + s.id] ? "Δεν φόρτωσε. Δοκιμάζω ξανά." : "Φόρτωση…"}</p>
+            {#if failed["s:" + s.id]}<p class="muted">Δεν φόρτωσε. Δοκιμάζω ξανά.</p>{:else}<div role="status" aria-label="Φόρτωση"><div class="skel"><i></i><span><i></i><i></i></span><i></i></div></div>{/if}
           {:else}
             {#if failed["s:" + s.id]}<p class="muted">παλιά δεδομένα</p>{/if}
             {#each mine as r (r.line + "|" + (r.dir ?? r.headsign))}
@@ -128,7 +128,7 @@
               <button type="button" class="row" onclick={() => openRow(r)}>
                 <span class="pill" style:--c={bd.bg} style:--t={bd.fg}>{bd.label}</span>
                 <span class="head">→ {r.headsign}</span>
-                <span class="when"><b>{whenText(r.times[0].at, app.serverNow)}</b>{#if r.times[1]}<small>μετά {whenText(r.times[1].at, app.serverNow)}</small>{/if}</span>
+                <span class="when"><b class="etachip" class:live={r.times[0].live}>{#if r.times[0].live}<span class="sr">ζωντανά: </span>{/if}{whenText(r.times[0].at, app.serverNow)}</b>{#if r.times[1]}<small>μετά {whenText(r.times[1].at, app.serverNow)}</small>{/if}</span>
               </button>
             {/each}
             {#each others as r (r.line + "|" + (r.dir ?? r.headsign))}
@@ -164,28 +164,35 @@
 {/if}
 
 <style>
-  .title { color: var(--fg); font-size: 15px; font-weight: 700; }
+  .sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .title { color: var(--fg); font-size: var(--fs-title); font-weight: 800; letter-spacing: -0.01em; }
   .muted { margin: 4px 0; color: var(--muted); font-size: 12px; }
-  .sub { margin: 8px 0 2px; font-size: 12px; font-weight: 600; color: var(--muted); }
-  .stop { margin: 6px 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+  .sub { margin: 10px 0 6px; font-size: var(--fs-eyebrow); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  /* A stop is a card, as in «Κοντά σου» and the app (docs/design-unify-2026-11.md). */
+  .stop { margin: 0 0 10px; padding: 6px 14px 4px; border: 1px solid var(--border); border-radius: var(--r-lg); background: var(--surface); }
   .shead { display: flex; align-items: center; gap: 8px; }
-  .name { flex: 1; min-width: 0; min-height: 36px; padding: 0; border: 0; background: none; color: var(--fg); font: inherit; font-size: 14px;
-    font-weight: 700; text-align: left; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .name { flex: 1; min-width: 0; min-height: 36px; padding: 0; border: 0; background: none; color: var(--fg); font: inherit; font-size: var(--fs-title);
+    font-weight: 700; letter-spacing: -0.01em; text-align: left; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .name:hover { text-decoration: underline; text-underline-offset: 3px; }
-  .unstar { flex: none; width: 36px; height: 36px; border: 0; border-radius: 8px; background: none; color: #f59f00; font-size: 18px; cursor: pointer; }
+  .unstar { flex: none; width: 36px; height: 36px; border: 0; border-radius: 8px; background: none; color: var(--star); font-size: 18px; cursor: pointer; }
   .unstar:hover { background: var(--control); }
   .row { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 40px; padding: 0 4px; margin: 0 -4px; border: 0; border-radius: 8px;
-    background: none; color: inherit; font: inherit; font-size: 13px; text-align: left; cursor: pointer; }
+    background: none; color: inherit; font: inherit; font-size: 14px; text-align: left; cursor: pointer; }
   .row:hover { background: var(--control); }
   .row.other { min-height: 32px; color: var(--muted); font-size: 12px; }
-  .pill { flex: none; min-width: 34px; padding: 2px 8px; border-radius: 10px; background: var(--c); color: var(--t); font-weight: 700; text-align: center; }
+  /* The compact line badge: min 34 × 24, radius 6. */
+  .pill { flex: none; display: inline-flex; align-items: center; justify-content: center; min-width: 38px; height: 24px; padding: 0 7px;
+    border-radius: var(--r-xs); background: var(--c); color: var(--t); font-size: 13px; font-weight: 800; font-variant-numeric: tabular-nums; }
   .head { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .head.muted { margin: 0; }
   .when { flex: none; display: flex; align-items: baseline; gap: 6px; font-variant-numeric: tabular-nums; }
-  .when b { font-size: 15px; }
+  /* The compact ETA chip: a timetable time on surface-2, a live one on the board plate (dark, amber digits). */
+  .etachip { display: inline-flex; align-items: center; height: 24px; padding: 0 9px; border-radius: 999px; background: var(--control);
+    color: var(--muted); font-size: 14px; font-weight: 800; }
+  .etachip.live { background: var(--board); color: var(--board-digit); box-shadow: 0 0 0 1px var(--board-edge); }
   .when small { color: var(--muted); font-size: 11px; white-space: nowrap; }
   .chev { flex: none; color: var(--muted); }
-  .warn { flex: none; color: var(--late3); font-size: 14px; }
+  .warn { flex: none; color: var(--bad-text); font-size: 14px; }
   .all { display: block; width: 100%; min-height: 36px; padding: 0; border: 0; background: none; color: var(--accent); font: inherit; font-size: 13px;
     font-weight: 600; cursor: pointer; }
   button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }

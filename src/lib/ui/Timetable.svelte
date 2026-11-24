@@ -71,14 +71,14 @@
 
 <style>
   .sum { margin: 8px 0 6px; color: var(--muted); font-size: 12px; }
-  .bad { color: var(--late2); }
+  .bad { color: var(--late-text); }
   .runs { display: flex; flex-wrap: wrap; gap: 4px 10px; margin: 0; padding: 0; list-style: none;
     font-size: 13px; font-variant-numeric: tabular-nums; }
   .gone { color: var(--muted); }
-  .missed { color: var(--late3); text-decoration: line-through; }
+  .missed { color: var(--bad-text); text-decoration: line-through; }
   .next { font-weight: 700; }
   .seen { color: var(--fg); }
-  .seen::before { content: "✓ "; color: var(--ontime); }
+  .seen::before { content: "✓ "; color: var(--ok-text); }
   .live { color: var(--accent); font-weight: 700; }
   .live::before { content: "● "; font-size: 9px; vertical-align: 2px; }
 </style>

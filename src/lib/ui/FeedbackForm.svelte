@@ -115,7 +115,7 @@
     border-radius: 10px; background: var(--bg); color: var(--fg); font: inherit; font-size: 16px; line-height: 1.4; }
   textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
   .meta { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
-  .err { color: var(--late3); font-size: 12px; }
+  .err { color: var(--bad-text); font-size: 12px; }
   .btn { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; border: 0; border-radius: 10px;
     font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; }
   .attach { background: var(--control); color: var(--fg); }
@@ -123,7 +123,7 @@
   .shot img { width: 44px; height: 44px; object-fit: cover; border-radius: 6px; }
   .shot span { flex: 1; color: var(--muted); }
   .x { display: grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: 8px; background: none; color: var(--muted); cursor: pointer; }
-  .send { background: var(--accent); color: #fff; }
+  .send { background: var(--accent); color: var(--on-accent); }
   .send:disabled { opacity: .45; cursor: default; }
   .follow { align-self: stretch; background: var(--fg); color: var(--bg); }   /* black in light, white in dark */
   .fine { font-size: 11px; text-align: center; }
@@ -132,6 +132,6 @@
   pre { max-height: 200px; overflow: auto; margin: 4px 0 0; padding: 8px; border-radius: 8px; background: var(--control);
     text-align: left; font-size: 11px; white-space: pre-wrap; word-break: break-all; }
   .done { align-items: center; text-align: center; }
-  .tick { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; color: var(--ontime);
+  .tick { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; color: var(--ok-text);
     background: color-mix(in srgb, var(--ontime) 14%, transparent); }
 </style>

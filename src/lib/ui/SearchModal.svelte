@@ -208,7 +208,7 @@
     <div class="modal">
       <div class="top">
         <input bind:this={input} bind:value={query} type="search" enterkeyhint="search" autocomplete="off" spellcheck="false"
-          placeholder="Γραμμή, στάση ή μέρος, π.χ. 040, Σύνταγμα" aria-label="Αναζήτηση γραμμής, στάσης ή μέρους" />
+          placeholder="Στάση, γραμμή ή μέρος, π.χ. Σύνταγμα, 040" aria-label="Αναζήτηση γραμμής, στάσης ή μέρους" />
         <button type="button" class="x" aria-label="Κλείσιμο" onclick={() => close()}>×</button>
       </div>
       <div class="seg" role="group" aria-label="Τι ψάχνω">
@@ -317,11 +317,11 @@
   .x:hover { background: var(--control); }
   .seg { display: flex; gap: 2px; margin-top: 10px; padding: 2px; border-radius: 10px; background: var(--control); }
   .seg button { flex: 1; min-height: 36px; border: 0; border-radius: 8px; background: none; color: inherit; font: inherit; font-size: 13px; cursor: pointer; }
-  .seg button[aria-pressed="true"] { background: var(--accent); color: #fff; font-weight: 600; }
+  .seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); font-weight: 600; }
   .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
   .chip { display: inline-flex; align-items: center; gap: 5px; min-height: 36px; padding: 0 12px; border: 1px solid var(--border);
     border-radius: 18px; background: none; color: inherit; font: inherit; font-size: 13px; cursor: pointer; }
-  .chip[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: #fff; }
+  .chip[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: var(--on-accent); }
   .results { flex: 1; min-height: 0; margin-top: 8px; overflow-y: auto; overscroll-behavior: contain; }
   h3 { margin: 10px 0 2px; color: var(--muted); font-size: 12px; font-weight: 600; }
   ul { margin: 0; padding: 0; list-style: none; }
@@ -336,7 +336,7 @@
   .go { flex: none; color: var(--accent); font-size: 13px; font-weight: 600; white-space: nowrap; }
   .modes { flex: none; display: inline-flex; gap: 2px; min-width: 40px; color: var(--muted); }
   .star { flex: none; width: 44px; height: 44px; border: 0; border-radius: 8px; background: none; color: var(--muted); font-size: 18px; cursor: pointer; }
-  .star.on { color: #f59f00; }
+  .star.on { color: var(--star); }
   .star:hover { background: var(--control); }
   .more, .link { min-height: 40px; padding: 0 6px; border: 0; background: none; color: var(--accent); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
   .link { min-height: 0; padding: 0; }

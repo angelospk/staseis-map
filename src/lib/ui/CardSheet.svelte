@@ -62,7 +62,7 @@
 
 <style>
   .card { position: absolute; z-index: 6; left: 12px; bottom: 28px; width: 360px; padding: 12px 14px;
-    background: var(--panel); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow);
+    background: var(--panel); border: 1px solid var(--border); border-radius: var(--r-lg); box-shadow: var(--shadow);
     backdrop-filter: blur(8px); }
   .top { touch-action: none; }
   .grab { display: none; width: 100%; height: 14px; margin: -8px 0 2px; padding: 0; border: 0; background: none; cursor: grab; }
@@ -79,18 +79,18 @@
   header :global(h2) { flex: 1; min-width: 0; margin: 0; font-size: 13px; font-weight: 600; color: var(--muted); overflow: hidden;
     text-overflow: ellipsis; white-space: nowrap; }
   header :global(.fresh) { flex: none; font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
-  header :global(.fresh.warn) { color: #e03131; }
+  header :global(.fresh.warn) { color: var(--bad-text); }
   .close { flex: none; width: 36px; height: 36px; margin: -8px -10px -8px 0; border: 0; background: none; font-size: 22px;
     color: var(--muted); cursor: pointer; border-radius: 8px; }
   .close:hover { background: var(--control); }
   .star { flex: none; width: 36px; height: 36px; margin: -8px -4px -8px 0; border: 0; background: none; color: var(--muted); font-size: 20px;
     cursor: pointer; border-radius: 8px; }
   .star:hover { background: var(--control); }
-  .star.on { color: #f59f00; }
+  .star.on { color: var(--star); }
   @media (prefers-reduced-motion: reduce) { .card { transition: none !important; } }
   @media (max-width: 719px) {
     /* GreekCaptain's fork: it floats 8 px in, rounded all round; as tall as its content, at most the screen. */
-    .card { left: 8px; right: 8px; bottom: calc(8px + env(safe-area-inset-bottom)); width: auto; border-radius: 28px;
+    .card { left: 8px; right: 8px; bottom: calc(8px + env(safe-area-inset-bottom)); width: auto; border-radius: var(--r-xl);
       padding: 14px 16px 14px; display: flex; flex-direction: column; box-sizing: border-box;
       max-height: calc(100dvh - 16px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); }
     .top { flex: none; }

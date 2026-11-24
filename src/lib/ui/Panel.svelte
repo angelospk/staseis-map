@@ -423,7 +423,7 @@
 <style>
   .panel { position: absolute; z-index: 5; top: calc(12px + env(safe-area-inset-top)); left: 12px; width: 344px;
     max-width: calc(100% - 64px); padding: 12px 14px; background: var(--panel); border: 1px solid var(--border);
-    border-radius: 14px; box-shadow: var(--shadow); backdrop-filter: blur(8px); }
+    border-radius: var(--r-xl); box-shadow: var(--shadow); backdrop-filter: blur(8px); }
   .panel.compact { width: fit-content; max-width: min(344px, calc(100% - 64px)); }
   .sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   #panel-body { margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border); }
@@ -437,10 +437,10 @@
   .tool { display: grid; place-items: center; flex: none; width: 40px; height: 40px; margin: 0; border: 0; border-radius: 8px;
     background: none; color: var(--muted); cursor: pointer; }
   .tool:hover, .tool.on { background: var(--control); color: var(--fg); }
-  .favbtn.on { color: #f59f00; }
+  .favbtn.on { color: var(--star); }
   @media (pointer: coarse) { .favbtn { width: 44px; height: 44px; } }
   .favpill { display: flex; align-items: center; gap: 2px; width: fit-content; max-width: 100%; min-height: 32px; margin-top: 8px;
-    padding: 0 2px 0 10px; border: 1px solid #f59f00; border-radius: 16px; font-size: 12px; box-sizing: border-box; }
+    padding: 0 2px 0 10px; border: 1px solid var(--star); border-radius: 16px; font-size: 12px; box-sizing: border-box; }
   .favpill span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .favpill button { flex: none; min-width: 30px; min-height: 28px; padding: 0 8px; border: 0; border-radius: 14px; background: none;
     color: var(--accent); font: inherit; font-weight: 600; cursor: pointer; }
@@ -450,7 +450,7 @@
   .favseg { display: flex; gap: 2px; margin-top: 8px; padding: 2px; border-radius: 10px; background: var(--control); }
   .favseg button { flex: 1; min-height: 32px; padding: 0 10px; border: 0; border-radius: 8px; background: none; color: inherit;
     font: inherit; font-size: 13px; cursor: pointer; }
-  .favseg button[aria-pressed="true"] { background: var(--accent); color: #fff; font-weight: 600; }
+  .favseg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); font-weight: 600; }
   @media (pointer: coarse) { .favseg button { min-height: 40px; } }
   /* A map filter is on: some vehicles are hidden. */
   .tool { position: relative; }
@@ -478,10 +478,10 @@
     max-height: calc(100dvh - 128px - env(safe-area-inset-top)); display: flex; flex-direction: column; }
   .popwrap.raised { z-index: 8; }   /* the map menu over the info card */
   .pop { min-height: 0; padding: 12px 14px; font-size: 13px; background: var(--bg); border: 1px solid var(--border);
-    border-radius: 14px; box-shadow: var(--shadow); box-sizing: border-box; overflow-y: auto; overscroll-behavior: contain; }
+    border-radius: var(--r-lg); box-shadow: var(--shadow); box-sizing: border-box; overflow-y: auto; overscroll-behavior: contain; }
   .pop p { margin: 0 0 8px; }
   .pop .feedback { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 44px;
-    margin: 0 0 12px; border: 0; border-radius: 10px; background: var(--accent); color: #fff; font: inherit; font-size: 14px;
+    margin: 0 0 12px; border: 0; border-radius: 10px; background: var(--accent); color: var(--on-accent); font: inherit; font-size: 14px;
     font-weight: 600; cursor: pointer; }
   .pop h3 { margin: 0 0 10px; font-size: 15px; }
   .pop h4 { margin: 0 0 6px; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
@@ -518,7 +518,7 @@
   .strike button { flex: none; width: 32px; height: 30px; border: 0; border-radius: 8px; background: none; color: inherit; font-size: 14px; cursor: pointer; }
   @media (pointer: coarse) { .strike { min-height: 44px; } .strike button { width: 44px; height: 44px; } }
   .hit { display: flex; align-items: flex-start; gap: 6px; margin-top: 8px; padding: 8px 4px 8px 10px; border-radius: 10px;
-    background: var(--accent); color: #fff; font-size: 14px; font-weight: 600; }
+    background: var(--accent); color: var(--on-accent); font-size: 14px; font-weight: 600; }
   .hit span { flex: 1; }
   .hit button { width: 30px; height: 28px; border: 0; border-radius: 8px; background: none; color: inherit; font-size: 18px; cursor: pointer; }
   .pop details summary { cursor: pointer; margin-bottom: 4px; }

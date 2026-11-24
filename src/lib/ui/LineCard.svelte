@@ -245,7 +245,7 @@
   .dirs button { display: flex; align-items: center; justify-content: center; gap: 5px; }
   .dirs button span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
   .arr { flex: none; }
-  .dirs button[aria-pressed="true"] { background: var(--accent); color: #fff; font-weight: 600; }
+  .dirs button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); font-weight: 600; }
   .sub { margin: 10px 0 2px; font-size: 12px; font-weight: 600; color: var(--muted); }
   .runs { list-style: none; margin: 0; padding: 0; }
   .runs button { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 36px; padding: 0 4px; margin: 0 -4px; border: 0;

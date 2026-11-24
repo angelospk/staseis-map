@@ -586,7 +586,7 @@
 
 <style>
   .trip { min-height: 0; padding: 8px 12px 10px; font-size: 13px;
-    background: var(--panel); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow);
+    background: var(--panel); border: 1px solid var(--border); border-radius: var(--r-lg); box-shadow: var(--shadow);
     backdrop-filter: blur(8px); box-sizing: border-box; overflow-y: auto; overscroll-behavior: contain; }
   .sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .row { display: flex; align-items: center; gap: 4px; }
@@ -655,6 +655,6 @@
   .foot { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin-top: 8px; color: var(--muted); font-size: 12px; }
   .foot label { display: flex; align-items: center; gap: 6px; }
   .note { display: block; margin: 8px 0 0; color: var(--muted); font-size: 12px; }
-  .warn { margin: 8px 0 0; color: var(--late2); }
+  .warn { margin: 8px 0 0; color: var(--late-text); }
   .link { border: 0; background: none; color: var(--accent); text-decoration: underline; cursor: pointer; font-size: inherit; }
 </style>

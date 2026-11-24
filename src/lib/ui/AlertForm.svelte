@@ -220,6 +220,6 @@
   select { min-height: 34px; padding: 0 6px; border: 1px solid var(--border); border-radius: 8px; background: var(--control);
     color: var(--fg); font-size: 16px; }
   .note { display: block; margin: 0; color: var(--muted); font-size: 12px; }
-  .warn { margin: 0; color: var(--late2); }
+  .warn { margin: 0; color: var(--late-text); }
   .link { border: 0; background: none; color: var(--accent); text-decoration: underline; cursor: pointer; font-size: inherit; }
 </style>
