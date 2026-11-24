@@ -11,6 +11,7 @@
   import type { AppState } from "../state.svelte";
   import CardSheet, { whenText } from "./CardSheet.svelte";
   import Icon from "./Icon.svelte";
+  import Eta from "./Eta.svelte";
   import { CITIES, findCities, MAIN_CITIES, nearestCity, type CityId } from "../cities";
   import { busId, isBusId } from "../busNs";
   import { serviceTag } from "../service";
@@ -183,7 +184,7 @@
             <span class="walk" title="Περίπου {walkMin(g.m)}′ με τα πόδια"><Icon name="walk" size={15} /><span class="sr">Με τα πόδια περίπου</span>{walkMin(g.m)}′</span>
           </div>
           {#if !b}
-            <p class="muted pad">Φόρτωση…</p>
+            <div class="loading" role="status" aria-label="Φόρτωση"><div class="skel"><i></i><span><i></i><i></i></span><i></i></div><div class="skel"><i></i><span><i></i><i></i></span><i></i></div></div>
           {:else if !b.rows.length}
             <p class="muted pad">Καμία άφιξη τώρα.</p>
           {/if}
@@ -193,7 +194,7 @@
             <button type="button" class="row" onclick={() => openRow(r)}>
               <span class="pill" style:--c={bd.bg} style:--t={bd.fg}>{bd.label}</span>
               <span class="dest"><b>→ {titleCase(toward(r.headsign))}</b><small class={n.tone}>{n.text}</small></span>
-              <span class="when"><b class:now={whenText(r.times[0].at, app.serverNow) === "τώρα"}>{whenText(r.times[0].at, app.serverNow)}</b>{#if r.times[1]}<small>μετά {whenText(r.times[1].at, app.serverNow)}</small>{/if}</span>
+              <span class="when"><Eta text={whenText(r.times[0].at, app.serverNow)} live={r.times[0].live} />{#if r.times[1]}<small>μετά {whenText(r.times[1].at, app.serverNow)}</small>{/if}</span>
             </button>
           {/each}
           {#if open && b?.quiet.length}
@@ -218,13 +219,13 @@
 {/if}
 
 <style>
-  .title { color: var(--fg); font-size: 15px; font-weight: 700; }
+  .title { color: var(--fg); font-size: var(--fs-title); font-weight: 800; letter-spacing: -0.01em; }
   .muted { margin: 4px 0; color: var(--muted); font-size: 12px; }
   .muted.pad { margin: 6px 0 8px; }
-  .use { min-height: 40px; margin: 4px 0 6px; padding: 0 14px; border: 0; border-radius: 10px; background: var(--accent); color: #fff;
+  .use { min-height: 40px; margin: 4px 0 6px; padding: 0 14px; border: 1px solid var(--accent); border-radius: var(--r-md); background: none; color: var(--accent);
     font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
-  .findstop { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 44px; margin: 6px 0 8px;
-    padding: 0 14px; border: 1px solid var(--accent); border-radius: 10px; background: none; color: var(--accent);
+  .findstop { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 48px; margin: 6px 0 8px;
+    padding: 0 14px; border: 0; border-radius: var(--r-md); background: var(--accent); color: var(--on-accent);
     font: inherit; font-size: 15px; font-weight: 600; cursor: pointer; }
   .cities { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 6px 0 4px; }
   .city { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-height: 52px; padding: 8px 12px;
@@ -239,15 +240,15 @@
     font-size: 12.5px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
   .picks .tag { display: block; margin-top: 1px; color: var(--muted); font-size: 10.5px; overflow: hidden; text-overflow: ellipsis; }
   .picks .chip[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
-  .stop { margin: 0 0 10px; padding: 10px 12px 2px; border: 1px solid var(--border); border-radius: 14px; }
+  .stop { margin: 0 0 10px; padding: 12px 14px 2px; border: 1px solid var(--border); border-radius: var(--r-lg); background: var(--surface); }
   .stop:last-child { margin-bottom: 2px; }
   .shead { display: flex; align-items: flex-start; gap: 10px; padding-bottom: 6px; }
   .who { flex: 1; min-width: 0; }
   .name { display: inline-flex; align-items: center; gap: 4px; max-width: 100%; min-height: 28px; padding: 0; border: 0; background: none;
-    color: var(--fg); font: inherit; font-size: 16px; font-weight: 700; text-align: left; cursor: pointer; }
+    color: var(--fg); font: inherit; font-size: var(--fs-title); font-weight: 700; letter-spacing: -0.01em; text-align: left; cursor: pointer; }
   .name:hover { text-decoration: underline; text-underline-offset: 3px; }
   .go { color: var(--muted); font-weight: 400; font-size: 18px; line-height: 1; }
-  .meta { color: var(--muted); font-size: 12.5px; }
+  .meta { color: var(--muted); font-size: var(--fs-meta); }
   .walk { flex: none; display: inline-flex; align-items: center; gap: 3px; margin-top: 2px; padding: 4px 10px 4px 8px; border: 1px solid var(--border);
     border-radius: 999px; color: var(--accent); font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
   .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
@@ -255,23 +256,24 @@
     padding: 6px 0; border: 0; border-top: 1px solid var(--border); border-radius: 0; background: none; color: inherit;
     font: inherit; text-align: left; cursor: pointer; }
   .row:hover { background: var(--control); }
-  .pill { min-width: 44px; padding: 5px 8px; border-radius: 8px; background: var(--c); color: var(--t); font-size: 14px; font-weight: 800;
-    text-align: center; font-variant-numeric: tabular-nums; }
+  /* The shared line badge (docs/design-unify-2026-11.md): operator or followed-line colour, radius 8, min 44 × 30. */
+  .pill { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; height: 30px; padding: 0 8px;
+    border-radius: var(--r-sm); background: var(--c); color: var(--t); font-size: var(--fs-badge); font-weight: 800;
+    font-variant-numeric: tabular-nums; }
   .dest { min-width: 0; display: flex; flex-direction: column; }
-  .dest b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; font-weight: 600; }
-  .dest small { font-size: 12px; font-weight: 600; }
-  .ok { color: var(--ontime); }
-  .late { color: var(--late2); }
+  .dest b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--fs-body); font-weight: 600; }
+  .dest small { font-size: var(--fs-note); font-weight: 600; }
+  .ok { color: var(--ok-text); }
+  .late { color: var(--late-text); }
   .dest small.muted { margin: 0; font-weight: 400; }
   .when { display: flex; flex-direction: column; align-items: flex-end; font-variant-numeric: tabular-nums; }
-  .when b { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.05; }
-  .when b.now { font-size: 17px; }
-  .when small { color: var(--muted); font-size: 11px; white-space: nowrap; }
+  .when small { margin-top: 1px; color: var(--muted); font-size: 12px; white-space: nowrap; }
   .quiet { margin: 0; padding: 6px 0; border-top: 1px solid var(--border); color: var(--muted); font-size: 12px; }
   .more { display: flex; align-items: center; gap: 6px; width: 100%; min-height: 40px; padding: 0; border: 0; border-top: 1px solid var(--border);
     background: none; color: var(--fg); font: inherit; text-align: left; cursor: pointer; }
   .chips { flex: 1; min-width: 0; display: flex; gap: 4px; overflow: hidden; }
-  .chip { flex: none; padding: 2px 7px; border-radius: 7px; background: var(--control); font-size: 12px; font-weight: 700; }
+  .chip { flex: none; padding: 3px 8px; border-radius: var(--r-xs); background: var(--control); font-size: 12px; font-weight: 700;
+    font-variant-numeric: tabular-nums; }
   .lbl { flex: none; color: var(--accent); font-size: 13px; font-weight: 600; }
   .chev { flex: none; display: inline-flex; color: var(--accent); transition: transform .2s cubic-bezier(.2, .8, .2, 1); }
   .chev.up { transform: rotate(180deg); }

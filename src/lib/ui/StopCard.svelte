@@ -22,6 +22,7 @@
   import { firstEta, landedOn } from "../etaPing";
   import { hhmmss, stopPlace } from "../lineStop";
   import LineChip from "./LineChip.svelte";
+  import Eta from "./Eta.svelte";
   // On a phone the card is a bottom sheet with three places (its header, half the screen, all of it): sheetDrag.ts.
   const narrowSheet = new MediaQuery("(max-width: 719px)");
   let sheetPlace = $state<Place>("half");
@@ -243,7 +244,7 @@
             <li><button type="button" class="row" onclick={() => app.openLineAt(g.line, g.variant ? [g.variant] : variantsOf(g.line), t.vehicle)}>
               {@render chip(g.line)}
               <span class="mid"><span class="to" title={g.headsign}>→ {d.to}{#if d.back}{" "}<span class="back">(επιστροφή)</span>{/if}</span><small class={note.tone}>{note.text}</small></span>
-              <span class="when"><b>{big(t)}</b>{#if g.times.length > 1}<small>μετά {g.times.slice(1).map(timeText).join(", ")}</small>{/if}</span>
+              <span class="when"><Eta text={big(t)} live={note.tone !== "muted"} xl />{#if g.times.length > 1}<small>μετά {g.times.slice(1).map(timeText).join(", ")}</small>{/if}</span>
             </button>{#if alertLines.some(l => l.line === g.line)}<button type="button" class="bell" class:on={alertFor?.line === g.line}
               title="Ειδοποίηση για το {g.line}" aria-label="Ειδοποίηση άφιξης για το {g.line} στη στάση {name}" onclick={() => bell(g)}><Bell /></button>{/if}</li>
           {/each}
@@ -316,7 +317,7 @@
 
 <style>
   .card { position: absolute; z-index: 6; left: 12px; bottom: 28px; width: 360px; padding: 12px 16px;
-    background: var(--panel); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow);
+    background: var(--panel); border: 1px solid var(--border); border-radius: var(--r-lg); box-shadow: var(--shadow);
     backdrop-filter: blur(8px); max-height: calc(100dvh - 140px); overflow-y: auto; overscroll-behavior: contain; box-sizing: border-box; }
   .grab { display: none; width: 100%; height: 14px; margin: -8px 0 2px; padding: 0; border: 0; background: none; cursor: grab; }
   .grab span { display: block; width: 40px; height: 5px; margin: 0 auto; border-radius: 3px; background: var(--border); }
@@ -325,7 +326,7 @@
   /* Under Back, the name gets a row of its own: Back and the buttons above, the full width for the name. */
   header:has(> :global(.back)) > :global(.back) { margin-right: auto; }
   header:has(> :global(.back)) .t { order: 1; flex-basis: 100%; }
-  h2 { margin: 0; font-size: 22px; font-weight: 600; line-height: 1.2; overflow: hidden; overflow-wrap: break-word;
+  h2 { margin: 0; font-size: var(--fs-title-lg); font-weight: 700; letter-spacing: -0.015em; line-height: 1.2; overflow: hidden; overflow-wrap: break-word;
     display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; }
   p { margin: 0 0 10px; color: var(--muted); font-size: 12px; }
   .sub { margin: 2px 0 0; font-size: 13px; }
@@ -340,25 +341,24 @@
   .seg button { flex: 1; min-height: 38px; padding: 0 8px; border: 0; background: none; color: var(--fg); font: inherit; font-size: 13px;
     font-weight: 600; cursor: pointer; white-space: nowrap; }
   .seg button + button { border-left: 1px solid var(--border); }
-  .seg button[aria-pressed="true"] { background: var(--control); }
+  .seg button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); }
   ul { list-style: none; margin: 0; padding: 0; }
   .arr li { display: flex; align-items: center; gap: 6px; border-bottom: 1px solid var(--border); }
   .row { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; min-height: 56px; padding: 6px 0; border: 0; background: none;
     color: inherit; font: inherit; text-align: left; cursor: pointer; }
   .row:hover .to { text-decoration: underline; text-underline-offset: 3px; }
   .mid { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-  .to { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; font-weight: 600; }
-  .mid small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; font-weight: 600; }
-  .ok { color: var(--ontime); }
-  .late { color: var(--late2); }
+  .to { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--fs-body); font-weight: 600; }
+  .mid small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--fs-note); font-weight: 600; }
+  .ok { color: var(--ok-text); }
+  .late { color: var(--late-text); }
   .muted { color: var(--muted); }
   .when { flex: none; display: flex; flex-direction: column; align-items: flex-end; }
-  .when b { font-size: 24px; line-height: 1.05; font-weight: 700; font-variant-numeric: tabular-nums; }
-  .when small { color: var(--muted); font-size: 11px; white-space: nowrap; }
+  .when small { margin-top: 1px; color: var(--muted); font-size: 12px; white-space: nowrap; }
   .bell { flex: none; display: grid; place-items: center; width: 40px; height: 40px; border: 0; border-radius: 50%;
     background: var(--control); color: var(--fg); cursor: pointer; }
   .bell:hover, .bell.on { background: var(--control-hover); color: var(--accent); }
-  h3 { margin: 14px 0 2px; color: var(--muted); font-size: 13px; font-weight: 600; }
+  h3 { margin: 16px 0 2px; color: var(--muted); font-size: var(--fs-eyebrow); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
   .also .row { width: 100%; min-height: 40px; padding: 3px 0; }
   .also .to { flex: 1; color: var(--muted); font-weight: 400; }
   .also .w { flex: none; font-size: 16px; font-variant-numeric: tabular-nums; }
@@ -389,19 +389,19 @@
     padding: 0 10px; border: 0; border-radius: 10px; background: var(--control); color: var(--fg); font: inherit; font-size: 13px;
     font-weight: 600; cursor: pointer; white-space: nowrap; }
   .acts button:hover { background: var(--control-hover); }
-  .src.stale { color: var(--late2); }
+  .src.stale { color: var(--late-text); }
   header .bell { margin-top: -2px; }
   .starbtn { flex: none; width: 36px; height: 36px; margin: -4px -4px 0 0; border: 0; background: none; color: var(--muted); font-size: 20px;
     cursor: pointer; border-radius: 8px; }
   .starbtn:hover { background: var(--control); }
-  .starbtn.starred { color: #f59f00; }
+  .starbtn.starred { color: var(--star); }
   .close { flex: none; width: 36px; height: 36px; margin: -4px -10px 0 0; border: 0; background: none; font-size: 22px;
     color: var(--muted); cursor: pointer; border-radius: 8px; }
   .close:hover { background: var(--control); }
   button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   @media (max-width: 719px) {
     /* GreekCaptain's fork: it floats 8 px in, rounded all round; as tall as its content, at most the screen. */
-    .card { left: 8px; right: 8px; bottom: calc(8px + env(safe-area-inset-bottom)); width: auto; border-radius: 28px;
+    .card { left: 8px; right: 8px; bottom: calc(8px + env(safe-area-inset-bottom)); width: auto; border-radius: var(--r-xl);
       padding: 14px 16px calc(14px + var(--sheet-room, 0px));
       max-height: calc(100dvh - 16px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); }
     .grab { display: block; }
