@@ -605,9 +605,10 @@
   // The view's padding around the open sheet (set once the map loads).
   let padNow: () => PaddingOptions = () => ({ top: 0, bottom: 0, left: 0, right: 0 });
   let flyOnFix = false;
-  // The first fix of the page, and of each locate tap, may switch the city; a city named in the URL
-  // (app.cityLocked) stops it until the user taps locate.
-  let cityOnFix = true;
+  // The first fix after locateMe (the page's own locate on open, or a tap) may switch the city; a city named in the URL
+  // (app.cityLocked) stops it until the user taps locate. The quiet restart of the dot (a link, a hand pick, the ★ panel)
+  // never does: it would reload the page away from what it opened on.
+  let cityOnFix = false;
   let me: { marker: Marker; el: HTMLElement; mover: Mover; fix: Fix } | null = null;
   const locator = new Locator({
     geo: navigator.geolocation,
@@ -949,7 +950,8 @@
     const onOnline = () => { const d = untrack(() => dark); if (loaded && d !== styleDark) restyle(m, d); };   // a theme chosen offline
     addEventListener("online", onOnline);
     // On open, «Κοντά σου» (nearby.ts onOpen): location allowed → find me and show the stops near me; not decided
-    // yet → the browser asks once, later a button in the panel asks; refused or a linked card → nothing. A link with
+    // yet → the browser asks once, later a button in the panel asks; refused or a linked card → nothing; favourites in
+    // this city → the ★ panel, no question (the location dot still starts when it was on and allowed). A link with
     // the location turned on last time and still allowed starts it again (no fly-to: the map shows the link).
     let disposed = false;
     const raw = (k: string): unknown => { try { return JSON.parse(localStorage.getItem(k) ?? "null"); } catch { return null; } };
@@ -960,8 +962,10 @@
       : Promise.resolve("unknown");
     void perm.then(p => {
       if (disposed) return;
-      const what = onOpen({ linked: app.linked, perm: p, asked: read("nearAsked"), last, picked: app.cityPicked });
-      if (what === "none") { if (p === "granted" && read("locOn")) locator.start(); return; }
+      const favs = app.favs.stops.length + app.favs.lines.length > 0;
+      const what = onOpen({ linked: app.linked, perm: p, asked: read("nearAsked"), last, picked: app.cityPicked, favs });
+      if (what === "favs") app.favsOpen = true;
+      if (what === "none" || what === "favs") { if (p === "granted" && read("locOn")) locator.start(); return; }
       if (what === "ask") store("nearAsked", true);
       if (what === "button") app.showNear();
       else locateMe();

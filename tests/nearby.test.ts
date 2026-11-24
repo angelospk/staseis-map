@@ -101,6 +101,20 @@ describe("onOpen", () => {
     expect(onOpen({ linked: false, perm: "unknown", asked: true, last: "granted", picked: true })).toBe("none");
     expect(onOpen({ linked: false, perm: "granted", asked: true, picked: false })).toBe("load");
   });
+  it("favourites in this city: the page opens on them, whatever the location answer", () => {
+    expect(onOpen({ linked: false, perm: "granted", asked: true, favs: true })).toBe("favs");
+    expect(onOpen({ linked: false, perm: "prompt", asked: false, favs: true })).toBe("favs");
+    expect(onOpen({ linked: false, perm: "denied", asked: true, favs: true })).toBe("favs");
+    expect(onOpen({ linked: false, perm: "unknown", asked: false, favs: true })).toBe("favs");
+  });
+  it("favourites never override a link or a hand pick of the city", () => {
+    expect(onOpen({ linked: true, perm: "granted", asked: true, favs: true })).toBe("none");
+    expect(onOpen({ linked: false, perm: "granted", asked: true, favs: true, picked: true })).toBe("none");
+  });
+  it("no favourites: the location rules as before", () => {
+    expect(onOpen({ linked: false, perm: "granted", asked: true, favs: false })).toBe("load");
+    expect(onOpen({ linked: false, perm: "prompt", asked: false, favs: false })).toBe("ask");
+  });
 });
 
 describe("elsewhere", () => {

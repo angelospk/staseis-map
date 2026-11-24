@@ -15,6 +15,7 @@
   import Icon from "./Icon.svelte";
   import Toward from "./Toward.svelte";
   import { towardsOfId } from "../towards";
+  import { firstEta } from "../etaPing";
 
   let { app }: { app: AppState } = $props();
   // The stop index, for which way each starred bus stop goes (Toward).
@@ -85,6 +86,9 @@
     const b = boards[s.id];
     return b ? stopRows(b.arrivals, app.serverNow / 1000) : [];
   };
+
+  // The first arrival time on screen (etaPing.ts): a row under a starred stop.
+  $effect(() => { if (open && app.favs.stops.some(s => rowsOf(s).length)) firstEta("fav"); });
 
   function openRow(r: StopRow) {
     if (r.vehicle && isBusId(r.line)) app.push(busVehicleCard(native(r.line), native(r.vehicle)));

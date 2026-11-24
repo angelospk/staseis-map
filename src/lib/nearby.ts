@@ -60,10 +60,13 @@ export type Perm = "granted" | "denied" | "prompt" | "unknown";
 // What the page does on open: a link wins, an allowed location loads at once, a refused one shows
 // nothing, and a location not decided yet is asked for once, then shown as a button. last: the answer this browser
 // gave the last time, for a browser without the Permissions API (Safari before iOS 16).
-// picked: the page loads right after a hand pick of the city.
-export function onOpen(o: { linked: boolean; perm: Perm; asked: boolean; last?: Perm; picked?: boolean }): "load" | "ask" | "button" | "none" {
+// picked: the page loads right after a hand pick of the city. favs: this city has favourites; a visit back then opens
+// on them (the ★ panel), not on the map or the location question (audit 2026-11-24: most visitors never came back).
+export function onOpen(o: { linked: boolean; perm: Perm; asked: boolean; last?: Perm; picked?: boolean; favs?: boolean }): "load" | "ask" | "button" | "none" | "favs" {
   const perm = o.perm === "unknown" ? o.last ?? "unknown" : o.perm;
-  if (o.linked || o.picked || perm === "denied") return "none";
+  if (o.linked || o.picked) return "none";
+  if (o.favs) return "favs";
+  if (perm === "denied") return "none";
   if (perm === "granted") return "load";
   return o.asked ? "button" : "ask";
 }

@@ -14,6 +14,7 @@
   import { CITIES, findCities, MAIN_CITIES, nearestCity, type CityId } from "../cities";
   import { busId, isBusId } from "../busNs";
   import { serviceTag } from "../service";
+  import { firstEta } from "../etaPing";
 
   let { app }: { app: AppState } = $props();
 
@@ -25,6 +26,8 @@
   // The picker's search over the citybus.gr cities (the two big buttons need no search).
   let query = $state("");
   const found = $derived(findCities(query));
+  // The other cities' list is long: it covers the map on a phone, so it opens on a tap or a search.
+  let allCities = $state(false);
 
   const POLL_MS = 30_000, PARALLEL = 6, ROWS = 2;
   const native = (id: string) => id.slice(id.indexOf(":") + 1);
@@ -82,6 +85,9 @@
   }
 
 
+  // The first arrival time on screen (etaPing.ts): a row in a shown group.
+  $effect(() => { if (app.nearShown && app.nearGroups.some(g => boardOf(g)?.rows.length)) firstEta("near"); });
+
   function badge(line: string) {
     const c = app.lineColor(isBusId(line) ? native(line) : line);
     return { label: isBusId(line) ? native(line) : line, bg: c.bg, fg: c.fg };
@@ -104,7 +110,13 @@
     {/each}
   </div>
   <input type="search" class="find" placeholder="Βρες πόλη…" aria-label="Βρες πόλη" bind:value={query} />
-  {#if found.length}
+  {#if !query.trim()}
+    <button type="button" class="more" aria-expanded={allCities} onclick={() => (allCities = !allCities)}>
+      <span class="chips"></span><span class="lbl">{allCities ? "Λιγότερες πόλεις" : `Όλες οι πόλεις (${found.length})`}</span>
+      <span class="chev" class:up={allCities}><Icon name="chevron" size={14} /></span>
+    </button>
+  {/if}
+  {#if found.length && (allCities || query.trim())}
     <div class="picks" role="group" aria-label="Πόλεις">
       {#each found as id (id)}
         {@const tag = serviceTag(CITIES[id].service)}
@@ -112,7 +124,7 @@
           onclick={() => pickCity(id)}>{CITIES[id].name}{#if tag}<small class="tag">{tag}</small>{/if}</button>
       {/each}
     </div>
-  {:else}
+  {:else if query.trim()}
     <p class="muted">Καμία πόλη.</p>
   {/if}
 {/snippet}
@@ -129,16 +141,23 @@
       <p class="muted">{#if fixCity}Η θέση σου είναι στην {CITIES[fixCity].name}· δείχνεις {app.cityInfo.name}.{:else}Η θέση σου δεν είναι σε πόλη που ξέρω.{/if} Διάλεξε πόλη:</p>
       {@render cities()}
     {:else if !app.myPos || app.locState === "denied"}
+      <!-- Without a location, the stop search comes first: one search, not a list of cities, to the next bus. -->
       {#if app.locState === "denied"}
-        <p class="muted">Ο browser δεν δίνει τη θέση σου. Διάλεξε πόλη:</p>
+        <p class="muted">Ο browser δεν δίνει τη θέση σου.</p>
       {:else if app.locState === "unavailable"}
-        <p class="muted">Δεν βρίσκω τη θέση σου. Διάλεξε πόλη:</p>
+        <p class="muted">Δεν βρίσκω τη θέση σου.</p>
       {:else if app.locState === "off"}
         <p class="muted">Δες ποια λεωφορεία περνάνε από τις στάσεις γύρω σου.</p>
-        <button type="button" class="use" onclick={() => app.locate()}>Χρήση της θέσης μου</button>
       {:else}
         <p class="muted">Βρίσκω τη θέση σου…</p>
       {/if}
+      {#if app.cityInfo.ready}
+        <button type="button" class="findstop" onclick={() => (app.finder = "stops")}><Icon name="stop" size={16} />Βρες τη στάση σου</button>
+      {/if}
+      {#if app.locState === "off"}
+        <button type="button" class="use" onclick={() => app.locate()}>Χρήση της θέσης μου</button>
+      {/if}
+      <p class="muted">Πόλη:</p>
       {@render cities()}
     {:else if !app.cityInfo.ready}
       <p class="muted">{app.cityInfo.name}: οι στάσεις και τα λεωφορεία έρχονται σύντομα.</p>
@@ -204,6 +223,9 @@
   .muted.pad { margin: 6px 0 8px; }
   .use { min-height: 40px; margin: 4px 0 6px; padding: 0 14px; border: 0; border-radius: 10px; background: var(--accent); color: #fff;
     font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .findstop { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 44px; margin: 6px 0 8px;
+    padding: 0 14px; border: 1px solid var(--accent); border-radius: 10px; background: none; color: var(--accent);
+    font: inherit; font-size: 15px; font-weight: 600; cursor: pointer; }
   .cities { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 6px 0 4px; }
   .city { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-height: 52px; padding: 8px 12px;
     border: 1px solid var(--border); border-radius: 12px; background: none; color: var(--fg); font: inherit; text-align: left; cursor: pointer; }

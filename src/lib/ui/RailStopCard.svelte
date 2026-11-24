@@ -10,6 +10,7 @@
   import type { AppState } from "../state.svelte";
   import Bell from "./Bell.svelte";
   import CardSheet, { whenText } from "./CardSheet.svelte";
+  import { firstEta, landedOn } from "../etaPing";
 
   let { app }: { app: AppState } = $props();
 
@@ -55,6 +56,8 @@
   const stops = $derived(Object.assign({}, ...Object.values(details).map(d => d.stops)) as Record<string, V2Stop>);
   const rows = $derived(board ? stopRows(board.arrivals, app.serverNow / 1000, patterns, stops) : []);
   const note = $derived(timesNote(rows.flatMap(r => r.times)));
+  // The first arrival time on screen (etaPing.ts).
+  $effect(() => { if (card && rows.length) firstEta(landedOn(card.id) ? "link" : "card"); });
   const lineOf = (id: string) => board?.lines.find(l => l.id === id) ?? details[id]?.line;
 
   $effect(() => { if (board) untrack(() => app.retitle(board!.stop.name)); });

@@ -26,7 +26,7 @@
   <nav><a href="/">← staseis.gr</a> · <a href="/terms/">Όροι χρήσης</a> · <a href="#en">English</a></nav>
 
   <h1>Πολιτική απορρήτου</h1>
-  <p class="meta">Ισχύει από: 14 Νοεμβρίου 2026 · Τελευταία αλλαγή: 15 Νοεμβρίου 2026 ·
+  <p class="meta">Ισχύει από: 14 Νοεμβρίου 2026 · Τελευταία αλλαγή: 24 Νοεμβρίου 2026 ·
     Επικοινωνία: <a href="mailto:angelos.papamichail@gmail.com">angelos.papamichail@gmail.com</a></p>
 
   <p>Αυτή η πολιτική αφορά την εφαρμογή «Στάσεις: Live Συγκοινωνίες» (Staseis: Live Transit,
@@ -88,8 +88,13 @@
   <h2>Ο χάρτης στο web</h2>
   <p>Το staseis.gr μετράει επισκέψεις με το Cloudflare Web Analytics. Δεν βάζει cookies και δεν σε
     ακολουθεί σε άλλα sites. Βλέπουμε μόνο συνολικούς αριθμούς (π.χ. πόσες επισκέψεις είχε μια σελίδα).
+    Όταν εμφανιστεί η πρώτη ώρα άφιξης, η σελίδα ζητά μία φορά από το staseis.gr ένα κενό αρχείο. Η διεύθυνσή του
+    λέει μόνο: την πόλη (Αθήνα, Θεσσαλονίκη, άλλη ή καμία, αν η σελίδα άνοιξε στο staseis.gr/), πόσο άργησε η ώρα (σε τέσσερις κατηγορίες), πού εμφανίστηκε
+    (κοντά σου, αγαπημένα, στάση από σύνδεσμο ή άλλη στάση) και αν η σελίδα τρέχει ως εγκατεστημένη εφαρμογή. Το
+    αίτημα δεν έχει cookies ούτε τη σελίδα από την οποία έγινε. Δεν αποθηκεύεται τίποτα στη συσκευή σου και δεν
+    στέλνεται κωδικός που να σε ξεχωρίζει.
     Τα αγαπημένα του χάρτη μένουν στον browser σου.</p>
-  <p>Μια λειτουργία του web στέλνει δεδομένα, και μόνο όταν τη χρησιμοποιήσεις:</p>
+  <p>Μια λειτουργία του web στέλνει προσωπικά δεδομένα, και μόνο όταν τη χρησιμοποιήσεις:</p>
   <ul>
     <li><strong>Ειδοποίηση στον browser</strong>: η διεύθυνση push του browser σου και η στάση, η γραμμή και το
       λεωφορείο της ειδοποίησης πηγαίνουν στο <code>push.haroldpoi.dev</code>. Σβήνονται όταν τελειώσει η
@@ -161,7 +166,7 @@
 
   <h1 id="en" lang="en">Privacy policy</h1>
   <div lang="en">
-    <p class="meta">Effective: 14 November 2026 · Last updated: 15 November 2026 ·
+    <p class="meta">Effective: 14 November 2026 · Last updated: 24 November 2026 ·
       Contact: <a href="mailto:angelos.papamichail@gmail.com">angelos.papamichail@gmail.com</a></p>
     <p>This policy covers the app "Staseis: Live Transit" (Στάσεις: Live Συγκοινωνίες, <code>gr.staseis.app</code>,
       Android and iOS) and the map at staseis.gr.</p>
@@ -208,7 +213,10 @@
         It is not the device or advertising ID, and only lets us count one phone's reports once. Reports go to a
         Google Sheet (via Google Apps Script), which we read to correct stop positions.</li>
       <li><strong>Website</strong>: visits are counted with Cloudflare Web Analytics (no cookies, no cross-site
-        tracking, totals only). A browser alert sends your browser's push address and the alert's stop, line and
+        tracking, totals only). When the first arrival time shows, the page requests one empty file from staseis.gr once.
+        Its address says only the city (Athens, Thessaloniki, other, or none when the page opened on staseis.gr/), how long the time took (four ranges), where it
+        showed (nearby, favourites, a linked stop or another stop) and whether the page runs as an installed app. The
+        request carries no cookies and no referring page; nothing is stored on your device and no identifier is sent. A browser alert sends your browser's push address and the alert's stop, line and
         bus to <code>push.haroldpoi.dev</code>; they are deleted when the alert ends or you cancel it.</li>
       <li><strong>Telegram bot</strong>, if you use it: it keeps the chat id and the alerts and stops you save there.
         <code>/stop</code> deletes the alerts; blocking the bot deletes everything.</li>

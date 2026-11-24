@@ -19,6 +19,7 @@
   import StopFixBar from "./StopFixBar.svelte";
   import { stopSource } from "../service";
   import { titleCase } from "../nearby";
+  import { firstEta, landedOn } from "../etaPing";
   import { hhmmss, stopPlace } from "../lineStop";
   import LineChip from "./LineChip.svelte";
   // On a phone the card is a bottom sheet with three places (its header, half the screen, all of it): sheetDrag.ts.
@@ -98,10 +99,16 @@
   const split = $derived(mineFirst(groups, mine));
   const shown = $derived(showAll ? groups : split.mine);
   const also = $derived(showAll ? [] : split.also.slice(0, 4));
+
   // The lines shown with no bus on its way: how often they usually pass now (backend rev 18, map#24), grey,
   // never mixed with the live rows; the rest as chips. citybus.gr cities have no "usual": their timetable times.
   const usual = $derived(board ? (app.cityInfo.gtfsHost === "citybus.gr" ? scheduleRows(board.arrivals, groups, now) : usualRows(board.usual, groups, now))
     .filter(u => showAll || mine.includes(u.line)) : []);
+  // The first arrival time on screen (etaPing.ts): a live row, or a timetable time where the city has only those.
+  $effect(() => {
+    const times = shown.length + also.length || (app.cityInfo.gtfsHost === "citybus.gr" && usual.length);
+    if (times && top) firstEta(landedOn(top.id) ? "link" : "card");
+  });
   const quiet = $derived(lines.filter(l => (showAll || mine.includes(l.line)) && !groups.some(g => g.line === l.line) && !usual.some(u => u.line === l.line)));
   const big = (t: ArrivalTime) => (t.here ? "τώρα" : timeText(t));
   // Where a row's bus runs to: its variant's end from the map data (trips*.json d.h); on a loop, after the turn,

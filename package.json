@@ -1,13 +1,13 @@
 {
   "name": "staseis-map",
   "private": true,
-  "version": "0.2.38",
+  "version": "0.2.39",
   "type": "module",
   "license": "MIT",
   "scripts": {
     "dev": "vite",
     "dev:mock": "VITE_MOCK=1 vite",
-    "build": "vite build && bun scripts/seo.ts dist",
+    "build": "vite build && bun scripts/seo.ts dist && bun scripts/eta-paths.ts dist",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "test": "vitest run",
