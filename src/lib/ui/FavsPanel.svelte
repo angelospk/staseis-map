@@ -128,7 +128,7 @@
               <button type="button" class="row" onclick={() => openRow(r)}>
                 <span class="pill" style:--c={bd.bg} style:--t={bd.fg}>{bd.label}</span>
                 <span class="head">→ {r.headsign}</span>
-                <span class="when"><b class="etachip" class:live={r.times[0].live}>{#if r.times[0].live}<span class="sr">ζωντανά, από το GPS: </span>{/if}{whenText(r.times[0].at, app.serverNow)}</b>{#if r.times[1]}<small>μετά {whenText(r.times[1].at, app.serverNow)}</small>{/if}</span>
+                <span class="when"><b class="etachip" class:live={r.times[0].live}>{#if r.times[0].live}<span class="sr">ζωντανά: </span>{/if}{whenText(r.times[0].at, app.serverNow)}</b>{#if r.times[1]}<small>μετά {whenText(r.times[1].at, app.serverNow)}</small>{/if}</span>
               </button>
             {/each}
             {#each others as r (r.line + "|" + (r.dir ?? r.headsign))}

@@ -169,7 +169,7 @@ button, input { font: inherit; color: inherit; }
 .skel { display: grid; grid-template-columns: 44px minmax(0, 1fr) 40px; align-items: center; gap: 10px; min-height: 52px;
   border-top: 1px solid var(--border); }
 .skel i { display: block; height: 10px; border-radius: 5px; background: var(--control); animation: skel 1.4s ease-in-out infinite alternate; }
-.skel i:first-child { height: 30px; border-radius: var(--r-sm); }
+.skel > i:first-child { height: 30px; border-radius: var(--r-sm); }
 .skel span { display: flex; flex-direction: column; gap: 7px; }
 .skel span i:last-child { width: 45%; }
 .skel > i:last-child { height: 22px; }
