@@ -128,7 +128,7 @@
               <button type="button" class="row" onclick={() => openRow(r)}>
                 <span class="pill" style:--c={bd.bg} style:--t={bd.fg}>{bd.label}</span>
                 <span class="head">→ {r.headsign}</span>
-                <span class="when"><b class="etachip" class:live={r.times[0].live}>{whenText(r.times[0].at, app.serverNow)}</b>{#if r.times[1]}<small>μετά {whenText(r.times[1].at, app.serverNow)}</small>{/if}</span>
+                <span class="when"><b class="etachip" class:live={r.times[0].live}>{#if r.times[0].live}<span class="sr">ζωντανά, από το GPS: </span>{/if}{whenText(r.times[0].at, app.serverNow)}</b>{#if r.times[1]}<small>μετά {whenText(r.times[1].at, app.serverNow)}</small>{/if}</span>
               </button>
             {/each}
             {#each others as r (r.line + "|" + (r.dir ?? r.headsign))}
@@ -164,6 +164,7 @@
 {/if}
 
 <style>
+  .sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .title { color: var(--fg); font-size: var(--fs-title); font-weight: 800; letter-spacing: -0.01em; }
   .muted { margin: 4px 0; color: var(--muted); font-size: 12px; }
   .sub { margin: 10px 0 6px; font-size: var(--fs-eyebrow); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }

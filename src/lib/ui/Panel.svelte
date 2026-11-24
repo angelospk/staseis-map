@@ -450,7 +450,7 @@
   .favseg { display: flex; gap: 2px; margin-top: 8px; padding: 2px; border-radius: 10px; background: var(--control); }
   .favseg button { flex: 1; min-height: 32px; padding: 0 10px; border: 0; border-radius: 8px; background: none; color: inherit;
     font: inherit; font-size: 13px; cursor: pointer; }
-  .favseg button[aria-pressed="true"] { background: var(--accent); color: #fff; font-weight: 600; }
+  .favseg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); font-weight: 600; }
   @media (pointer: coarse) { .favseg button { min-height: 40px; } }
   /* A map filter is on: some vehicles are hidden. */
   .tool { position: relative; }
@@ -481,7 +481,7 @@
     border-radius: var(--r-lg); box-shadow: var(--shadow); box-sizing: border-box; overflow-y: auto; overscroll-behavior: contain; }
   .pop p { margin: 0 0 8px; }
   .pop .feedback { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 44px;
-    margin: 0 0 12px; border: 0; border-radius: 10px; background: var(--accent); color: #fff; font: inherit; font-size: 14px;
+    margin: 0 0 12px; border: 0; border-radius: 10px; background: var(--accent); color: var(--on-accent); font: inherit; font-size: 14px;
     font-weight: 600; cursor: pointer; }
   .pop h3 { margin: 0 0 10px; font-size: 15px; }
   .pop h4 { margin: 0 0 6px; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
@@ -518,7 +518,7 @@
   .strike button { flex: none; width: 32px; height: 30px; border: 0; border-radius: 8px; background: none; color: inherit; font-size: 14px; cursor: pointer; }
   @media (pointer: coarse) { .strike { min-height: 44px; } .strike button { width: 44px; height: 44px; } }
   .hit { display: flex; align-items: flex-start; gap: 6px; margin-top: 8px; padding: 8px 4px 8px 10px; border-radius: 10px;
-    background: var(--accent); color: #fff; font-size: 14px; font-weight: 600; }
+    background: var(--accent); color: var(--on-accent); font-size: 14px; font-weight: 600; }
   .hit span { flex: 1; }
   .hit button { width: 30px; height: 28px; border: 0; border-radius: 8px; background: none; color: inherit; font-size: 18px; cursor: pointer; }
   .pop details summary { cursor: pointer; margin-bottom: 4px; }

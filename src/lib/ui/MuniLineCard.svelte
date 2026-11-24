@@ -167,7 +167,7 @@
   .dirs { display: flex; gap: 2px; padding: 2px; border-radius: 10px; background: var(--control); }
   .dirs button { flex: 1; min-width: 0; min-height: 36px; padding: 4px 8px; border: 0; border-radius: 8px; background: none; color: inherit;
     font: inherit; font-size: 13px; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .dirs button[aria-pressed="true"] { background: var(--accent); color: #fff; font-weight: 600; }
+  .dirs button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); font-weight: 600; }
   .sub { margin: 10px 0 2px; font-size: 12px; font-weight: 600; color: var(--muted); }
   .runs { list-style: none; margin: 0; padding: 0; }
   .runs button { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 36px; padding: 0 4px; margin: 0 -4px; border: 0;

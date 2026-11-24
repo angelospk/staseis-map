@@ -317,11 +317,11 @@
   .x:hover { background: var(--control); }
   .seg { display: flex; gap: 2px; margin-top: 10px; padding: 2px; border-radius: 10px; background: var(--control); }
   .seg button { flex: 1; min-height: 36px; border: 0; border-radius: 8px; background: none; color: inherit; font: inherit; font-size: 13px; cursor: pointer; }
-  .seg button[aria-pressed="true"] { background: var(--accent); color: #fff; font-weight: 600; }
+  .seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); font-weight: 600; }
   .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
   .chip { display: inline-flex; align-items: center; gap: 5px; min-height: 36px; padding: 0 12px; border: 1px solid var(--border);
     border-radius: 18px; background: none; color: inherit; font: inherit; font-size: 13px; cursor: pointer; }
-  .chip[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: #fff; }
+  .chip[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: var(--on-accent); }
   .results { flex: 1; min-height: 0; margin-top: 8px; overflow-y: auto; overscroll-behavior: contain; }
   h3 { margin: 10px 0 2px; color: var(--muted); font-size: 12px; font-weight: 600; }
   ul { margin: 0; padding: 0; list-style: none; }

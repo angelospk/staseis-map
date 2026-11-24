@@ -70,7 +70,7 @@
   .row { display: flex; gap: 8px; margin-top: 10px; }
   .btn { flex: 1; min-height: 44px; border: 0; border-radius: 10px; background: var(--control); color: var(--fg); font: inherit;
     font-size: 14px; font-weight: 600; cursor: pointer; }
-  .primary { background: var(--accent); color: #fff; }
+  .primary { background: var(--accent); color: var(--on-accent); }
   .btn:disabled { opacity: .45; cursor: default; }
   .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .sv { display: block; margin-top: 8px; padding: 4px 0; color: var(--accent); font-size: 13px; font-weight: 600; text-align: center; text-decoration: none; }
