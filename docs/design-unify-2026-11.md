@@ -47,7 +47,7 @@ so the web and the app match on each phone with no font download. Numbers are al
 | `ink` | `#16181B` | `#ECEDE9` | text |
 | `muted` | `#5C626A` | `#A3A9B1` | secondary text (≥ 5.4:1 on every surface) |
 | `rule` | `#E3E4DF` | `#2E3337` | borders, dividers |
-| `accent` | `#1A56C4` | `#8AB4F8` | actions, links, live mark, «τώρα» |
+| `accent` | `#1A56C4` | `#8AB4F8` | actions, links, a timetable «τώρα» |
 | `on-accent` | `#FFFFFF` | `#0B1B3A` | text on an accent fill |
 | `accent-soft` | `#E7EEFB` | `#1C2C47` | selected segment, focus wash |
 | `ok` (text) | `#146C2E` | `#7DD99A` | «στην ώρα του» |
@@ -95,19 +95,26 @@ height 24, radius 6, 13 / 800.
 
 ### ETA style (the signature)
 
+A live time (from a vehicle's GPS) sits on a small dark **board plate** with amber digits, like the
+LED board at a smart bus stop. A timetable time has no plate.
+
 ```
- )) 5′        ← live: accent live mark (two arcs) + ink number, eta 24/800
-    μετά 12′  ← muted, 12 px
-    5′        ← timetable: muted number, no mark
- )) τώρα      ← «τώρα»: eta-now, accent
+ [ 5′ ]       ← live: board plate, amber digits, eta 24/800 (28 on the stop card)
+   μετά 12′   ← muted, 12 px
+   5′         ← timetable: muted number, no plate
+ [ τώρα ]     ← «τώρα»: same plate, the word in amber, 17/800
 ```
 
-- **Live mark**: two quarter arcs and a dot (the "broadcast" sign), 12 px, `accent`, top left of the
-  number. Only on a time that comes from a vehicle's GPS. The same drawing in both repos (SVG on the
-  web, `CustomPaint` in the app).
-- **Timetable** times: `muted`, weight 700, no mark. The row note says «από το πρόγραμμα».
+- **Plate**: fill `board` `#16181B` in both themes; in dark a 1 px `board-edge` `#30353A`
+  (`box-shadow: 0 0 0 1px`). Radius 6, padding 2 8. Digits `board-digit` `#FFB000`, weight 800,
+  tabular figures, the platform font. The prime «′» is 70 % of the digit size.
+- **Amber** `#FFB000` appears nowhere else. Late/early notes («αργεί 8′») keep their note colours.
+- **Timetable** times: `muted`, weight 700, no plate. The row note says «από το πρόγραμμα».
 - **Compact ETA chip** (pills, favourites rows): `surface-2` pill, height 24, radius 999, 14/800;
-  live: `accent-soft` fill and `accent` text.
+  live: the plate look (fill `board`, amber text), same pill shape and height.
+- **Flip**: when a live number changes (a new GPS fix) the digits flip once, 150 ms, `translateY` +
+  opacity. Off under `prefers-reduced-motion`.
+- The two-arcs live mark is gone: the plate is the live mark.
 
 ### Empty and loading states
 
@@ -118,10 +125,10 @@ one muted sentence, then at most one action (the app's pattern: the reason, then
 
 - **Web**: tokens in `src/app.css` (the old names keep working, values moved to the palette above);
   `LineChip`, «Κοντά σου», the stop card, favourites and the card shell use the badge, ETA, card
-  and radius tokens; the live mark in `Icon.svelte`; skeleton rows while a stop's arrivals load.
+  and radius tokens; the board plate in `Eta.svelte` and `app.css` (`.eta.plate`); skeleton rows while a stop's arrivals load.
 - **App**: `Tones` take the palette; one `Ds` (radius, type) in `theme.dart`; `LineBadge` and the
   home pills use operator colours (from `lines.json`) like the web; `ArrivalRow` and the home pills
-  use the ETA style and the live mark; stops on the home sheet sit in cards like the web.
+  use the ETA style (the board plate is the live mark); stops on the home sheet sit in cards like the web.
 
 ## 4. Later (not in this branch)
 

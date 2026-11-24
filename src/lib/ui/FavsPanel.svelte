@@ -128,7 +128,7 @@
               <button type="button" class="row" onclick={() => openRow(r)}>
                 <span class="pill" style:--c={bd.bg} style:--t={bd.fg}>{bd.label}</span>
                 <span class="head">→ {r.headsign}</span>
-                <span class="when"><b class="etachip" class:live={r.times[0].live}>{#if r.times[0].live}<Icon name="live" size={10} />{/if}{whenText(r.times[0].at, app.serverNow)}</b>{#if r.times[1]}<small>μετά {whenText(r.times[1].at, app.serverNow)}</small>{/if}</span>
+                <span class="when"><b class="etachip" class:live={r.times[0].live}>{whenText(r.times[0].at, app.serverNow)}</b>{#if r.times[1]}<small>μετά {whenText(r.times[1].at, app.serverNow)}</small>{/if}</span>
               </button>
             {/each}
             {#each others as r (r.line + "|" + (r.dir ?? r.headsign))}
@@ -185,10 +185,10 @@
   .head { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .head.muted { margin: 0; }
   .when { flex: none; display: flex; align-items: baseline; gap: 6px; font-variant-numeric: tabular-nums; }
-  /* The compact ETA chip: a timetable time on surface-2, a live one in the accent with the live mark. */
-  .etachip { display: inline-flex; align-items: center; gap: 3px; height: 24px; padding: 0 9px; border-radius: 999px; background: var(--control);
+  /* The compact ETA chip: a timetable time on surface-2, a live one on the board plate (dark, amber digits). */
+  .etachip { display: inline-flex; align-items: center; height: 24px; padding: 0 9px; border-radius: 999px; background: var(--control);
     color: var(--muted); font-size: 14px; font-weight: 800; }
-  .etachip.live { background: var(--accent-soft); color: var(--accent); }
+  .etachip.live { background: var(--board); color: var(--board-digit); box-shadow: 0 0 0 1px var(--board-edge); }
   .when small { color: var(--muted); font-size: 11px; white-space: nowrap; }
   .chev { flex: none; color: var(--muted); }
   .warn { flex: none; color: var(--bad-text); font-size: 14px; }

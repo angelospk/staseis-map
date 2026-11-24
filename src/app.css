@@ -12,6 +12,8 @@
   --lvt-normal: #1a7f37; --lvt-worse: #8a6500; --lvt-much: #c92a2a;
   /* Radius, type and spacing (same numbers as the app). */
   --r-xs: 6px; --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --r-xl: 24px;
+  /* The board plate of a live time (docs/design-unify-2026-11.md, ETA style): dark in both themes, amber digits. */
+  --board: #16181B; --board-edge: transparent; --board-digit: #FFB000;
   --fs-eta-xl: 28px; --fs-eta: 24px; --fs-eta-now: 17px; --fs-title-lg: 22px; --fs-title: 17px;
   --fs-body: 15px; --fs-meta: 13px; --fs-note: 12.5px; --fs-eyebrow: 11.5px; --fs-badge: 14px;
   color-scheme: light dark;
@@ -25,7 +27,7 @@
     --ok-text: #7dd99a; --late-text: #ffb25c; --bad-text: #ff8a7a; --star: #f5b83d;
     --warn-bg: #4a3b00; --control: #24282c; --control-hover: #30353a; --accent: #8ab4f8;
     --shadow: 0 6px 24px rgba(0, 0, 0, .45), 0 1px 3px rgba(0, 0, 0, .3);
-    --lvt-normal: #3fb95f; --lvt-worse: #d4a72c; --lvt-much: #ff6b6b;
+    --lvt-normal: #3fb95f; --lvt-worse: #d4a72c; --lvt-much: #ff6b6b; --board-edge: #30353A;
   }
 }
 :root[data-theme="light"] { color-scheme: light; }
@@ -36,7 +38,7 @@
   --ok-text: #7dd99a; --late-text: #ffb25c; --bad-text: #ff8a7a; --star: #f5b83d;
   --warn-bg: #4a3b00; --control: #24282c; --control-hover: #30353a; --accent: #8ab4f8;
   --shadow: 0 6px 24px rgba(0, 0, 0, .45), 0 1px 3px rgba(0, 0, 0, .3);
-  --lvt-normal: #3fb95f; --lvt-worse: #d4a72c; --lvt-much: #ff6b6b;
+  --lvt-normal: #3fb95f; --lvt-worse: #d4a72c; --lvt-much: #ff6b6b; --board-edge: #30353A;
 }
 * { box-sizing: border-box; }
 html, body, #app { margin: 0; height: 100%; overflow: hidden; background: var(--bg); color: var(--fg);
@@ -151,14 +153,16 @@ button, input { font: inherit; color: inherit; }
 @keyframes locating { to { opacity: .35; } }
 /* MapLibre's buttons stay white in dark, so the locate icon keeps its dark colour. */
 
-/* Shared ETA style (docs/design-unify-2026-11.md §2): a live time has the live mark and ink; a timetable time is
-   muted with no mark; «τώρα» is a word, smaller and in the accent. */
-.eta { display: inline-flex; align-items: flex-start; gap: 3px; font-size: var(--fs-eta); font-weight: 800; line-height: 1.05;
+/* Shared ETA style (docs/design-unify-2026-11.md §2): a live time sits on the board plate (dark plate, amber digits, the
+   LED board of a smart bus stop); a timetable time is muted with no plate; «τώρα» is a word on the same plate. */
+.eta { display: inline-flex; align-items: center; font-size: var(--fs-eta); font-weight: 800; line-height: 1.05;
   letter-spacing: -0.02em; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.eta .live { flex: none; display: inline-flex; line-height: 0; margin-top: .12em; color: var(--accent); }
-.eta.now .live { margin-top: .3em; }
+.eta.plate { padding: 2px 8px; border-radius: 6px; background: var(--board); color: var(--board-digit); box-shadow: 0 0 0 1px var(--board-edge); }
+.eta .digits { display: inline-block; }
+.eta .min { font-style: normal; font-size: .7em; }
 .eta.sched { color: var(--muted); font-weight: 700; }
-.eta.now { font-size: var(--fs-eta-now); color: var(--accent); letter-spacing: 0; line-height: 1.4; }
+.eta.now { font-size: var(--fs-eta-now); letter-spacing: 0; line-height: 1.4; }
+.eta.now.sched { color: var(--accent); }
 .eta.xl { font-size: var(--fs-eta-xl); }
 .eta.xl.now { font-size: 19px; }
 /* Skeleton rows while arrivals load. */

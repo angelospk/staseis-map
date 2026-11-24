@@ -1,5 +1,5 @@
 <script lang="ts" module>
-  export type IconName = "star" | "star-filled" | "bus" | "metro" | "tram" | "suburban" | "pin" | "stop" | "area" | "street" | "dot" | "walk" | "chevron" | "swap" | "directions" | "route" | "live";
+  export type IconName = "star" | "star-filled" | "bus" | "metro" | "tram" | "suburban" | "pin" | "stop" | "area" | "street" | "dot" | "walk" | "chevron" | "swap" | "directions" | "route";
 </script>
 
 <script lang="ts">
@@ -14,9 +14,6 @@
   stroke-linecap="round" stroke-linejoin="round">
   {#if name === "star" || name === "star-filled"}
     <path d="M10 2.6l2.3 4.7 5.1.7-3.7 3.6.9 5.1L10 14.3l-4.6 2.4.9-5.1L2.6 8l5.1-.7z" fill={name === "star-filled" ? "currentColor" : "none"} />
-  {:else if name === "live"}
-    <!-- The live mark (a time from a vehicle's GPS): a dot and two arcs, as the app's LiveMark draws it. -->
-    <circle cx="5" cy="15" r="2.2" fill="currentColor" stroke="none" /><path d="M5 9.2A5.8 5.8 0 0 1 10.8 15M5 3.6A11.4 11.4 0 0 1 16.4 15" stroke-width="2.6" />
   {:else if name === "bus"}
     <rect x="4" y="3" width="12" height="12" rx="2" /><path d="M4 10h12M7 15v2M13 15v2" /><circle cx="7.5" cy="12.5" r=".6" /><circle cx="12.5" cy="12.5" r=".6" />
   {:else if name === "metro"}
