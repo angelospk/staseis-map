@@ -48,3 +48,25 @@ export function lightenDark(m: PaintableMap) {
     }
   }
 }
+
+// The base map's host. OpenFreeMap first; VersaTiles when OpenFreeMap's tiles do not load (an outage, or a filter
+// list that blocks its host: EasyPrivacy did on 2026-11-25, and Brave Shields and uBlock Origin then showed a blank map).
+export type Provider = "openfreemap" | "versatiles";
+export const styleUrl = (p: Provider, dark: boolean) => p === "openfreemap"
+  ? `https://tiles.openfreemap.org/styles/${dark ? "dark" : "positron"}`
+  : `https://tiles.versatiles.org/assets/styles/${dark ? "colorful-dark" : "gray"}/style.json`;
+
+// Watches the base map of one style. sources: the style's own source ids (read at style.load, before ours are added).
+// failed: a base-map source errors (its TileJSON or a tile) before any of its tiles has loaded.
+export function baseWatch(sources: Iterable<string>) {
+  const ids = new Set(sources);
+  let ok = false;
+  const base = (e: { sourceId?: string }) => !!e.sourceId && ids.has(e.sourceId);
+  return {
+    loaded(e: { sourceId?: string; tile?: unknown }) { if (e.tile && base(e)) ok = true; },
+    failed: (e: { sourceId?: string }) => !ok && base(e),
+  };
+}
+
+// The bold font of our own labels, as the host's glyph server names it (the style's `glyphs`).
+export const boldFont = (p: Provider) => [p === "openfreemap" ? "Noto Sans Bold" : "noto_sans_bold"];

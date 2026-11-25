@@ -31,7 +31,7 @@
   import type { LineStatic, Variant } from "../types";
   import type { AppState } from "../state.svelte";
   import SpeedLegend from "../ui/SpeedLegend.svelte";
-  import { lightenDark } from "./basemap";
+  import { baseWatch, boldFont, lightenDark, styleUrl, type Provider } from "./basemap";
   import { Turners } from "../turn";
   import { metroGlyph, metroLogo, stopSign, tramGlyph, tramLogo } from "./mapIcons";
   import { Fleet, routeGeom, type FleetEntry, type RouteGeom } from "./fleet";
@@ -53,7 +53,6 @@
   const FOLLOW_VIEW_MS = 2000;   // following the user: the view is reported this often
   const VIEW_SETTLE_MS = 300;   // the map must rest this long before the city layer asks for tiles
   const DELAY_CLASSES = ["ontime", "late1", "late2", "late3", "none"];
-  const STYLE = (dark: boolean) => `https://tiles.openfreemap.org/styles/${dark ? "dark" : "positron"}`;
   const EMPTY = { type: "FeatureCollection" as const, features: [] };
   const COS_LAT = Math.cos((37.98 * Math.PI) / 180);
   const M_PER_PX_Z0 = 156_543.03 * COS_LAT;   // metres per pixel at zoom 0, at Athens
@@ -70,6 +69,7 @@
   const systemDark = new MediaQuery("(prefers-color-scheme: dark)");
   const dark = $derived(resolveDark(app.theme, systemDark.current));
   let styleDark = untrack(() => dark);   // the theme of the style on the map
+  let provider: Provider = "openfreemap";   // the base map's host; VersaTiles once OpenFreeMap fails (setup)
   let styleGen = 0;
   let started = false;                    // the first style has loaded
 
@@ -252,7 +252,7 @@
         "icon-allow-overlap": true, "icon-ignore-placement": true, visibility: vis },
       paint: { "icon-opacity": fade } });
     m.addLayer({ id: "train-age", type: "symbol", source: "trains", minzoom: 12, filter: ageFilter(app.ageMode),
-      layout: { "text-field": ["get", "age"], "text-font": ["Noto Sans Bold"], "text-size": 10, "text-anchor": "top",
+      layout: { "text-field": ["get", "age"], "text-font": boldFont(provider), "text-size": 10, "text-anchor": "top",
         "text-offset": [0, 1], "text-allow-overlap": true, "text-ignore-placement": true, visibility: vis },
       paint: { "text-color": ["case", ["get", "stale"], "#d9480f", "#333333"], "text-halo-color": "#ffffff", "text-halo-width": 1.5 } });
   }
@@ -297,7 +297,7 @@
         "circle-opacity-transition": { duration: 300 }, "circle-stroke-opacity-transition": { duration: 300 },
       } as never });
     m.addLayer({ id: "city-label", type: "symbol", source: "city", minzoom: 14,
-      layout: { "text-field": ["get", "line"], "text-font": ["Noto Sans Bold"], "text-size": 10, "text-offset": [0, 1.7],
+      layout: { "text-field": ["get", "line"], "text-font": boldFont(provider), "text-size": 10, "text-offset": [0, 1.7],
         "text-allow-overlap": true, "text-ignore-placement": true },
       paint: { "text-color": color("fg"), "text-halo-color": color("bg"), "text-halo-width": 1.5,
         "text-opacity-transition": { duration: 300 } } as never });
@@ -337,7 +337,7 @@
         "icon-size": byZoom([14, 0.8, 17, 1.25]), "icon-allow-overlap": true, "icon-ignore-placement": true } });
     m.addLayer({ id: "metro-label", type: "symbol", source: "metro", minzoom: RAIL_ZOOM + 1,
       filter: ["==", ["get", "kind"], "station"],
-      layout: { "text-field": ["get", "name"], "text-font": ["Noto Sans Bold"], "text-size": 10,
+      layout: { "text-field": ["get", "name"], "text-font": boldFont(provider), "text-size": 10,
         "text-offset": [0, 0.9], "text-anchor": "top", "text-optional": true, visibility: stationVis },
       paint: { "text-color": "#333333", "text-halo-color": "#ffffff", "text-halo-width": 1.5 } });
   }
@@ -356,7 +356,7 @@
         "circle-stroke-color": sel(accent, "#ffffff"), "circle-stroke-width": byZoom([SUBURBAN_ZOOM, sel(3, 1.5), 17, sel(3.5, 2)]) } });
     m.addLayer({ id: "suburban-label", type: "symbol", source: "suburban", minzoom: RAIL_ZOOM + 1,
       filter: ["==", ["get", "kind"], "station"],
-      layout: { "text-field": ["get", "name"], "text-font": ["Noto Sans Bold"], "text-size": 10,
+      layout: { "text-field": ["get", "name"], "text-font": boldFont(provider), "text-size": 10,
         "text-offset": [0, 0.9], "text-anchor": "top", "text-optional": true, visibility: vis },
       paint: { "text-color": "#333333", "text-halo-color": "#ffffff", "text-halo-width": 1.5 } });
   }
@@ -400,7 +400,7 @@
       const want = untrack(() => dark);
       if (want !== styleDark) restyle(m, want);   // the theme changed meanwhile, offline (restyle skipped it)
     });
-    m.setStyle(STYLE(d), { diff: false });
+    m.setStyle(styleUrl(provider, d), { diff: false });
   }
 
   // Typical bus speed per stop-to-stop segment (speed.ts): thin and translucent, under every other layer of ours.
@@ -889,7 +889,7 @@
     try {
       m = new MlMap({
         container: node,
-        style: STYLE(styleDark),
+        style: styleUrl(provider, styleDark),
         center: CITIES[untrack(() => app.cityId)].center,   // untracked: a city change moves this map, it does not rebuild it
         zoom: CITIES[untrack(() => app.cityId)].zoom,
         attributionControl: { compact: true },
@@ -904,7 +904,23 @@
       return;
     }
     // Every style load (the first and each restyle), before its tiles draw: the dark style is lightened (basemap.ts).
-    m.on("style.load", () => { if (styleDark) lightenDark(m); });
+    m.on("style.load", () => { if (styleDark && provider === "openfreemap") lightenDark(m); });
+    // The base map's tiles do not load (basemap.ts baseWatch: an outage, or a filter list that blocks the host): the
+    // map moves to the fallback host, once. Our layers stay, on top of the new base map (restyle).
+    // null: the first style has not loaded, so an error then is the style's own request.
+    let watch: ReturnType<typeof baseWatch> | null = null;
+    m.on("style.load", () => { watch = baseWatch(Object.keys(m.getStyle().sources)); });   // before our sources are added
+    m.on("sourcedata", e => watch?.loaded(e));
+    // Offline every tile fails: that is not the host's fault. A style swapped before the first `load` adds our layers
+    // itself (restyle); the first `load` then skips them (started).
+    m.on("error", e => {
+      if (provider !== "openfreemap" || !navigator.onLine || (watch && !watch.failed(e as { sourceId?: string }))) {
+        console.error(e.error);   // a listener stops MapLibre's own log
+        return;
+      }
+      provider = "versatiles";
+      restyle(m, untrack(() => dark));
+    });
     m.touchZoomRotate.disableRotation();
     m.addControl(new NavigationControl({ showCompass: false }), "top-right");
     m.addControl({ onAdd: () => locateCtl, onRemove: () => locateCtl.remove() }, "top-right");
@@ -936,7 +952,7 @@
 
     const popup = new Popup({ closeButton: false, offset: 10, maxWidth: "240px" });
     m.on("load", () => {
-      addAll(m);
+      if (!started) addAll(m);
       if (untrack(() => dark) !== styleDark) restyle(m, untrack(() => dark));   // the theme changed while the map loaded
     });
     raf = requestAnimationFrame(frame);

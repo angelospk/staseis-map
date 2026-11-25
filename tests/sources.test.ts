@@ -11,11 +11,12 @@ describe("data sources", () => {
     expect(API_DOCS).toBe("https://angelospk.github.io/staseis-rt/");
   });
 
-  it("keeps the three credits of the tile style, with their links", () => {
+  it("keeps the credits of the tile styles, with their links", () => {
     expect(TILE_CREDITS.map(c => [c.text, c.href])).toEqual([
       ["OpenFreeMap", "https://openfreemap.org"],
       ["© OpenMapTiles", "https://www.openmaptiles.org/"],
       ["OpenStreetMap", "https://www.openstreetmap.org/copyright"],
+      ["VersaTiles", "https://versatiles.org"],
     ]);
   });
 });

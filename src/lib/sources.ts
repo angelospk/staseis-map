@@ -5,10 +5,12 @@ export const API_DOCS = "https://angelospk.github.io/staseis-rt/";
 export const GTFS_PAGE = "https://data.gov.gr/dataset/fb049bb1-aea6-4443-95fa-8b941dd6a057";
 export const STASY_GTFS_PAGE = "https://data.gov.gr/dataset/4e897a75-975a-4ce7-af65-f32ea01f93b9";
 
-// The credits of the tile style in MapView (OpenFreeMap's TileJSON attribution): keep them in step with it.
+// The credits of the tile styles in MapView (OpenFreeMap's TileJSON attribution; VersaTiles is the fallback host,
+// basemap.ts): keep them in step with them.
 export const TILE_CREDITS = [
   { text: "OpenFreeMap", href: "https://openfreemap.org" },
   { text: "© OpenMapTiles", href: "https://www.openmaptiles.org/" },
   { lead: "Δεδομένα από ", text: "OpenStreetMap", href: "https://www.openstreetmap.org/copyright" },
+  { lead: "Εφεδρικός χάρτης: ", text: "VersaTiles", href: "https://versatiles.org" },
 ];
 export const FRONTEND_REPO = "https://github.com/angelospk/staseis-map";
